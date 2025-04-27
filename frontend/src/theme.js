@@ -9,11 +9,17 @@ const theme = createTheme({
       main: '#547792', // Your secondary color
     },
     background: {
-      default: '#EDF6FF', // Your fresh light blue background
+      default: '#FFFFFF', // White
     },
     info: {
       main: '#94B4C1',
     },
+    complimentary: {
+      main: '#ECEFCA',
+    },
+    lightGrey: {
+      main: '#e0e0e0',
+    }
   },
   typography: {
     fontFamily: 'Montserrat, sans-serif',

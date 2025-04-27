@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import Gigs from './pages/Gigs'; 
@@ -14,9 +15,11 @@ import Applications from './pages/Applications';
 
 
 
+import SignInSignUp from './pages/SignInSignUp'; // <-- Import your new login page
 
 function App() {
   return (
+      <GoogleOAuthProvider clientId="1026581693709-gnl3aqd28jsskbl4dovcn3ncaejrf0oh.apps.googleusercontent.com">
     <>
       <NavBar />
       <Routes>
@@ -35,6 +38,7 @@ function App() {
 
       </Routes>
     </>
+      </GoogleOAuthProvider>
   );
 }
 
