@@ -38,17 +38,17 @@ jobs:
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/bridgework-frontend:latest
 
     - name: Deploy to EC2
-  uses: appleboy/ssh-action@v0.1.10
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USERNAME }}
-    key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-    script: |
-      cd ~
-      if [ ! -d "Bridge-Work" ]; then
-        git clone https://github.com/SJ-Hacks/Bridge-Work.git
-      fi
-      cd Bridge-Work
-      git pull origin main
-      docker-compose -f docker-compose.prod.yml pull
-      docker-compose -f docker-compose.prod.yml up -d --remove-orphans
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          cd ~
+          if [ ! -d "Bridge-Work" ]; then
+            git clone https://github.com/SJ-Hacks/Bridge-Work.git
+          fi
+          cd Bridge-Work
+          git pull origin main
+          docker-compose -f docker-compose.prod.yml pull
+          docker-compose -f docker-compose.prod.yml up -d --remove-orphans
