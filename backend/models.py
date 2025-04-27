@@ -19,7 +19,7 @@ class JobBase(BaseModel):
 
 
 class Job(JobBase):
-    id: str = Field(default_factory=str, alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
