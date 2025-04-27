@@ -22,6 +22,7 @@ const SignInSignUp = () => {
       localStorage.setItem('jwtToken', response.data.access_token);
       localStorage.setItem('userRole', response.data.type);
       localStorage.setItem('userId', response.data.id);
+      localStorage.setItem('email', response.data.email);
 
       const fullName = response.data.name || '';
       localStorage.setItem('userFullName', fullName);
