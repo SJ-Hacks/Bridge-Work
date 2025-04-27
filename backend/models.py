@@ -58,7 +58,6 @@ class User(BaseModel):
     photo_b64: str
     type: str  # job_seeker, job_poster
     organization: str
-    type: str
 
     class Config:
         validate_by_name = True
