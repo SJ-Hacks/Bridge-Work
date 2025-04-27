@@ -40,9 +40,6 @@ class ApplicationAPI(BaseCRUDAPI[Application]):
         return await self.patch(item_id, data)
 
 
-
-
 class UserAPI(BaseCRUDAPI[User]):
     def __init__(self):
         super().__init__(User, "users")
-
