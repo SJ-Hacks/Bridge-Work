@@ -25,6 +25,7 @@ const Home = () => {
     }, 30);
     return () => clearInterval(interval);
   }, []);
+  
 
   const scrollToNav = () => {
     if (navRef.current) {

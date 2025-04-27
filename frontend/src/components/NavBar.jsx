@@ -1,7 +1,20 @@
 import { AppBar, Toolbar, Typography, Button, Box, Container, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const NavBar = () => {
+  const [firstName, setFirstName] = useState(null);
+
+  useEffect(() => {
+    const storedName = localStorage.getItem('userFirstName');
+    console.log("NavBar useEffect -> storedName:", storedName); // 🪵 logging the localStorage value
+    if (storedName) {
+      setFirstName(storedName);
+    }
+  }, []);
+
+  console.log("NavBar Render -> firstName state:", firstName); // 🪵 logging the current state
+
   return (
     <AppBar position="static" elevation={0} color="transparent" sx={{ backgroundColor: 'background.default' }}>
       <Box sx={{ width: '100%', backgroundColor: 'background.default' }}>
@@ -33,10 +46,21 @@ const NavBar = () => {
                 Services
               </Button>
 
+              {firstName ? (
+  <Button
+    color="inherit"
+    sx={{ textTransform: 'none', color: 'black', fontWeight: 'bold' }}
+    component={Link}
+    to="/profile"
+  >
+    Hi, {firstName}
+            </Button>
+          ) : (
+            <>
               <Button
                 color="inherit"
                 component={Link}
-                to="/signin" // <-- changed to /signin
+                to="/signin"
                 sx={{ textTransform: 'none', color: 'black' }}
               >
                 Sign In / Sign Up
@@ -45,7 +69,7 @@ const NavBar = () => {
               <Button
                 variant="outlined"
                 component={Link}
-                to="/profile" // <-- (keep this pointing to /profile if you want, or later redirect after login)
+                to="/signin"
                 sx={{
                   textTransform: 'none',
                   fontWeight: 500,
@@ -61,6 +85,8 @@ const NavBar = () => {
               >
                 Become a Job Provider
               </Button>
+            </>
+          )}
             </Box>
           </Toolbar>
 
