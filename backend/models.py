@@ -4,6 +4,7 @@ from datetime import datetime
 from bson import ObjectId
 from typing import List
 
+
 class JobBase(BaseModel):
     title: str
     description: str
@@ -16,6 +17,7 @@ class JobBase(BaseModel):
     applied: bool = False
     skills: List[str]
 
+
 class UserBase(BaseModel):
     name: str
     about_me: str
@@ -24,13 +26,15 @@ class UserBase(BaseModel):
     phone: int
     email: str
 
+
 class HLUserBase(BaseModel):
     photo_b64: str
-    
+
     class Config:
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
 
 class PosterUserBase(BaseModel):
     organization: str
@@ -40,6 +44,7 @@ class PosterUserBase(BaseModel):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+
 class Job(JobBase):
     id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -48,6 +53,7 @@ class Job(JobBase):
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
 
 class VolunteerJob(JobBase):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -68,3 +74,4 @@ class GigJob(JobBase):
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
