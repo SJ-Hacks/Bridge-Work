@@ -1,42 +1,43 @@
-import { useState } from 'react';
-import { Container, Typography, Card, CardContent, Grid, Stack, Chip, Box, Button, Snackbar, Alert } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-
-const mockApplications = [
-  {
-    id: 1,
-    jobId: 1,
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    message: 'I have experience in community service and would love to contribute.',
-    status: 'Pending',
-  },
-  {
-    id: 2,
-    jobId: 2,
-    name: 'Jane Smith',
-    email: 'janesmith@example.com',
-    message: 'Passionate about helping others, and flexible with timings.',
-    status: 'Pending',
-  },
-];
+import { fetchApplicationsByJob, acceptApplication, rejectApplication } from '../store/applicationSlice';
+import { fetchUsers } from '../store/userSlice';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { Container, Typography, Card, CardContent, Grid, Stack, Chip, Box, Button, Snackbar, Alert } from '@mui/material';
 
 const Applications = () => {
   const { jobId } = useParams();
-  const [applications, setApplications] = useState(
-    mockApplications.filter((app) => String(app.jobId) === jobId)
-  );
+  const dispatch = useDispatch();
+
+  const { list: users = [] } = useSelector((state) => state.users || {});
+  const { list: applications = [], status: appStatus } = useSelector((state) => state.applications || {});
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const handleAction = (id, newStatus) => {
-    const updated = applications.map((applicant) =>
-      applicant.id === id ? { ...applicant, status: newStatus } : applicant
-    );
-    setApplications(updated);
-    setSnackbarMessage(`Applicant ${newStatus.toLowerCase()} successfully!`);
+  useEffect(() => {
+    dispatch(fetchUsers());
+    dispatch(fetchApplicationsByJob(jobId));
+  }, [dispatch, jobId]);
+
+  const getUserById = (userId) => users.find((user) => user._id === userId);
+
+  const handleAccept = async (id) => {
+    await dispatch(acceptApplication(id));
+    setSnackbarMessage('Application accepted!');
     setSnackbarOpen(true);
   };
+
+  const handleReject = async (id) => {
+    await dispatch(rejectApplication(id));
+    setSnackbarMessage('Application rejected!');
+    setSnackbarOpen(true);
+  };
+
+  if (appStatus === 'loading') {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Box sx={{ backgroundColor: '#f9fafb', py: 8, minHeight: '100vh' }}>
@@ -51,66 +52,64 @@ const Applications = () => {
           </Typography>
         ) : (
           <Grid container spacing={4}>
-            {applications.map((applicant) => (
-              <Grid item xs={12} key={applicant.id}>
-                <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4 }}>
-                  <CardContent>
-                    <Stack spacing={1}>
-                      <Typography variant="h6" fontWeight="bold">
-                        {applicant.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {applicant.email}
-                      </Typography>
-                      <Typography variant="body2" mt={1}>
-                        {applicant.message}
-                      </Typography>
+            {applications.map((app) => {
+              const user = getUserById(app.applicant);
+              return (
+                <Grid item xs={12} key={app._id}>
+                  <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4 }}>
+                    <CardContent>
+                      <Stack spacing={1}>
+                        <Typography variant="h6" fontWeight="bold">
+                          {user ? user.name : 'Unknown User'}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {user ? user.email : 'No Email'}
+                        </Typography>
 
-                      <Box mt={2}>
-                        <Chip
-                          label={applicant.status}
-                          size="small"
-                          color={
-                            applicant.status === 'Pending'
-                              ? 'warning'
-                              : applicant.status === 'Accepted'
-                              ? 'success'
-                              : 'error'
-                          }
-                          sx={{ fontWeight: 'bold' }}
-                        />
-                      </Box>
+                        <Box mt={2}>
+                          <Chip
+                            label={app.selected ? 'Accepted' : app.active ? 'Pending' : 'Rejected'}
+                            size="small"
+                            color={
+                              app.selected
+                                ? 'success'
+                                : app.active
+                                ? 'warning'
+                                : 'error'
+                            }
+                            sx={{ fontWeight: 'bold' }}
+                          />
+                        </Box>
 
-                      {/* Accept/Reject Buttons */}
-                      {applicant.status === 'Pending' && (
-                        <Stack direction="row" spacing={2} mt={3}>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => handleAction(applicant.id, 'Accepted')}
-                            fullWidth
-                          >
-                            Accept
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => handleAction(applicant.id, 'Rejected')}
-                            fullWidth
-                          >
-                            Reject
-                          </Button>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                        {app.active && !app.selected && (
+                          <Stack direction="row" spacing={2} mt={3}>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={() => handleAccept(app._id)}
+                              fullWidth
+                            >
+                              Accept
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => handleReject(app._id)}
+                              fullWidth
+                            >
+                              Reject
+                            </Button>
+                          </Stack>
+                        )}
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         )}
 
-        {/* Snackbar */}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={3000}

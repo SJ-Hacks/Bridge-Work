@@ -4,6 +4,7 @@ import { fetchGigs } from "../store/gigsSlice";
 import { createApplication } from "../store/applicationSlice";
 import { useUser } from "../context/UserContext";
 
+
 import {
   Card,
   CardContent,

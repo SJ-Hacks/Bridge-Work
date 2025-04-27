@@ -1,15 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import fulltimeReducer from './fullTimeSlice';
+import fullTimeReducer from './fullTimeSlice';
 import gigReducer from './gigsSlice';
 import volunteerReducer from './volunteerSlice';
 import applicationReducer from './applicationSlice';
+import userReducer from './userSlice';
 
 const store = configureStore({
   reducer: {
-    fulltime: fulltimeReducer,
     gigs: gigReducer,
-    volunteer: volunteerReducer,
-    application: applicationReducer,
+    volunteers: volunteerReducer,
+    fulltimes: fullTimeReducer,
+    applications: applicationReducer,
+    users: userReducer,
   },
 });
 
