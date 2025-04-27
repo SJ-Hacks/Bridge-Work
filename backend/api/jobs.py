@@ -16,5 +16,3 @@ class GigJobAPI(BaseCRUDAPI[GigJob]):
 class VolunteerJobAPI(BaseCRUDAPI[VolunteerJob]):
     def __init__(self):
         super().__init__(VolunteerJob, "volunteers")
-
-# x

@@ -5,10 +5,21 @@ from backend.database import Database
 from bson import ObjectId
 from fastapi import Body, Depends, Path
 
+from fastapi import Query
 from database import db
 from models import JobBase, PyObjectId
 
 T = TypeVar("T", bound=JobBase)
+from typing import List, Generic, TypeVar
+
+K = TypeVar("K")
+
+
+class PaginatedResponse(BaseModel, Generic[K]):
+    total: int
+    skip: int
+    limit: int
+    items: List[K]
 
 
 class BaseCRUDAPI(Generic[T]):
@@ -18,10 +29,11 @@ class BaseCRUDAPI(Generic[T]):
         self.router = APIRouter()
         self.db = db
 
-        self.router.get("/", response_model=List[self.model])(self.get_all)
+        self.router.get("/", response_model=PaginatedResponse)(self.get_all)
         self.router.get("/{item_id}", response_model=self.model)(self.get_one)
         self.router.post("/", response_model=self.model)(self.create)
-        self.router.put("/{item_id}", response_model=self.model)(self.update)
+        self.router.put("/{item_id}", response_model=self.model)(self.put)
+        # self.router.patch("/{item_id}", response_model=self.model)(self.patch)
         self.router.delete("/{item_id}")(self.delete)
 
     async def get_one(self, item_id: PyObjectId, kwargs: Optional[dict] = {}):
@@ -30,20 +42,36 @@ class BaseCRUDAPI(Generic[T]):
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
         return self.model(**document)
 
-    async def get_all(self, **kwargs):
+    async def get_all(
+            self,
+            skip: int = Query(0, ge=0, description="Number of items to skip"),
+            limit: int = Query(10, ge=1, le=100, description="Maximum number of items to return"),
+            kwargs: Optional[dict] = {}
+    ):
+        query = kwargs
+        cursor = self.db.db[self.collection_name].find(query)
+        total = await self.db.db[self.collection_name].count_documents(query)
+
         items = []
-        cursor = self.db.db[self.collection_name].find(**kwargs)
-        async for document in cursor:
-            items.append(self.model(**document))
-        return items
+        async for document in cursor.skip(skip).limit(limit):
+            if "_id" in document:
+                document["_id"] = str(document["_id"])
+            items.append(self.model.model_validate(document))
+
+        return {
+            "total": total,
+            "skip": skip,
+            "limit": limit,
+            "items": items,
+        }
 
     async def create(self, item: T = Body(...)):
         document = item.model_dump(by_alias=True)
         result = await self.db.db[self.collection_name].insert_one(document)
         return await self.get_one(result.inserted_id)
 
-    async def update(self, item_id: PyObjectId, item: T):
-        document = item.dict(by_alias=True)
+    async def put(self, item_id: PyObjectId, item: T = Body(...)):
+        document = item.model_dump(by_alias=True)
         result = await self.db.db[self.collection_name].update_one(
             {"_id": ObjectId(item_id)}, {"$set": document}
         )
