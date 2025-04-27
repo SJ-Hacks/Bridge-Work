@@ -1,0 +1,85 @@
+### Get all jobs
+GET http://localhost:8000/api/jobs
+Content-Type: application/json
+
+###
+
+### Get a specific job by ID
+GET http://localhost:8000/api/jobs/{{job_id}}
+Content-Type: application/json
+
+###
+
+### Create a new job
+POST http://localhost:8000/api/job
+Content-Type: application/json
+
+{
+  "title": "Software Engineer",
+  "description": "Develop and maintain software applications.",
+  "location": "Remote",
+  "points": 100,
+  "is_active": true
+}
+
+###
+
+### Update an existing job
+PUT http://localhost:8000/api/jobs/{{job_id}}
+Content-Type: application/json
+
+{
+  "title": "Senior Software Engineer",
+  "description": "Lead software development projects.",
+  "location": "Remote",
+  "points": 150,
+  "is_active": true
+}
+
+###
+
+### Delete a job
+DELETE http://localhost:8000/api/jobs/{{job_id}}
+Content-Type: application/json
+
+###
+
+### Get all gig jobs
+GET http://localhost:8000/api/gigs
+Content-Type: application/json
+
+###
+
+### Create a new gig job
+POST http://localhost:8000/api/gigs
+Content-Type: application/json
+
+{
+  "title": "Freelance Writer",
+  "description": "Write articles for blogs.",
+  "location": "Remote",
+  "points": 50,
+  "is_active": true,
+  "duration": "2 weeks"
+}
+
+###
+
+### Get all volunteer jobs
+GET http://localhost:8000/api/volunteers
+Content-Type: application/json
+
+###
+
+### Create a new volunteer job
+POST http://localhost:8000/api/volunteers
+Content-Type: application/json
+
+{
+  "title": "Community Helper",
+  "description": "Assist in community events.",
+  "location": "Local",
+  "points": 20,
+  "is_active": true,
+  "organization": "Local Community Center"
+}
