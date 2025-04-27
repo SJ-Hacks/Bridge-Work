@@ -1,8 +1,7 @@
-version: '3.8'
 services:
-  mongodb:
+  mongodb2:
     image: mongo:latest
-    container_name: mongodb
+    container_name: mongodb2
     ports:
       - "27017:27017"
     volumes:
@@ -11,5 +10,17 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password123
 
+  mongo-express2:
+    image: mongo-express:latest
+    container_name: mongo-express2
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password123
+      - ME_CONFIG_MONGODB_SERVER=mongodb2
+    depends_on:
+      - mongodb2
+
 volumes:
-  mongodb_data: 
+  mongodb_data:
