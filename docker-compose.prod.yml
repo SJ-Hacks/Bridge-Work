@@ -1,24 +1,6 @@
 services:
-  backend:
-    image: your-dockerhub-username/bridgework-backend:latest
-    restart: always
-    ports:
-      - "8000:8000"
-    environment:
-      - MONGO_URI=mongodb://root:example@mongodb:27017/bridgework_db
-    depends_on:
-      - mongodb
-
-  frontend:
-    image: your-dockerhub-username/bridgework-frontend:latest
-    restart: always
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-
   mongodb:
-    image: mongo:6.0
+    image: mongo:6.0.13
     restart: always
     ports:
       - "27017:27017"
@@ -27,6 +9,30 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: bhusalashish/bridgework-backend:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://root:example@mongodb:27017/bridgework_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  frontend:
+    image: bhusalashish/bridgework-frontend:latest
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   mongodb_data:
