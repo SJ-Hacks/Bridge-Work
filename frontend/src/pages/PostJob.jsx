@@ -23,7 +23,7 @@ const jobTypes = [
     {label: 'Recurring', value: 'recurring'},
 ];
 
-const tagOptions = ['Paid', 'Volunteer', 'Gig'];
+const tagOptions = ['Job', 'Volunteer', 'Gig'];
 
 const PostJob = () => {
     const [form, setForm] = useState({
