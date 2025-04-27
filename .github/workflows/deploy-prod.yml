@@ -44,6 +44,6 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          cd ~/bridgework
+          cd ~/Bridge-Work
           docker-compose -f docker-compose.prod.yml pull
           docker-compose -f docker-compose.prod.yml up -d --remove-orphans
