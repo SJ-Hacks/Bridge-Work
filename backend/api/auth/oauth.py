@@ -70,7 +70,7 @@ def google_callback(request: Request):
     # Here: Create or Fetch User
     user = get_or_create_user(userinfo)
 
-    # 🔥 Create a token for this user
+    # Create a token for this user
     access_token = create_access_token(data={"sub": user["email"]})
 
     return {

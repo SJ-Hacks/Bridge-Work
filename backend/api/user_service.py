@@ -1,10 +1,12 @@
-from models import UserBase
+
 from datetime import datetime
 from database import db  # Ensure your database connection is imported
+from models import User
+
 
 def get_or_create_user(userinfo: dict) -> dict:
     # Validate input data using UserBase
-    user_data = UserBase(
+    user_data = User(
         name=userinfo["name"],
         about_me=userinfo.get("about_me", ""),
         location=userinfo.get("location", "Unknown"),

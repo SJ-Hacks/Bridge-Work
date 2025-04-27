@@ -29,7 +29,8 @@ class BaseCRUDAPI(Generic[T]):
         # self.router = APIRouter(dependencies=[Depends(get_current_user)])
         self.db = db
 
-        self.router.get("/", response_model=PaginatedResponse)(self.get_all)
+        # self.router.get("/", response_model=PaginatedResponse)(self.get_all)
+        self.router.get("/", response_model=List[self.model])(self.get_all)
         self.router.get("/{item_id}", response_model=self.model)(self.get_one)
         self.router.post("/", response_model=self.model)(self.create)
         self.router.put("/{item_id}", response_model=self.model)(self.put)
@@ -73,22 +74,15 @@ class BaseCRUDAPI(Generic[T]):
                 # Field not defined in model, fallback: regex search
                 query[key] = {"$regex": value, "$options": "i"}
 
-
         cursor = self.db.db[self.collection_name].find(query)
-        total = await self.db.db[self.collection_name].count_documents(query)
-
         items = []
-        async for document in cursor.skip(skip).limit(limit):
+        async for document in cursor:
             if "_id" in document:
                 document["_id"] = str(document["_id"])
             items.append(self.model.model_validate(document))
 
-        return {
-            "total": total,
-            "skip": skip,
-            "limit": limit,
-            "items": items,
-        }
+        return items
+
 
     async def create(self, item: T = Body(...)):
         document = item.model_dump(by_alias=True)

@@ -148,3 +148,12 @@ Content-Type: application/json
 PATCH http://localhost:8000/api/application/680dba881e930fe215d6a3ff/reject
 Content-Type: application/json
 
+
+### reject  application
+GET http://localhost:8000/api/user
+Content-Type: application/json
+
+### reject  application
+GET http://localhost:8000/api/user
+Content-Type: application/json
+

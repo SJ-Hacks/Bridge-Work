@@ -58,7 +58,7 @@ class User(BaseModel):
     photo_b64: str
     type: str  # job_seeker, job_poster
     organization: str
-    type: str = 'job_poster'
+    type: str
 
     class Config:
         validate_by_name = True
@@ -83,7 +83,7 @@ class VolunteerJob(JobBase):
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-
+    
 
 class GigJob(JobBase):
     # created_at: datetime = Field(default_factory=datetime.utcnow)

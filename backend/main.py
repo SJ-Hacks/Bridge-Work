@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI, ApplicationCrud, ApplicationAPI, UserAPI
+from api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI, ApplicationAPI, UserAPI
 
 from database import db
 from models import Job
@@ -16,16 +16,16 @@ async def lifespan(app: FastAPI):
     # Shutdown logic
     await db.close_database_connection()
 
+
 app = FastAPI(
     title="Bridge Works API",
     description="API documentation for managing jobs, gigs, and volunteers.",
     version="1.0.0",
     docs_url="/docs",  # Swagger UI endpoint
     redoc_url="/redoc",  # ReDoc endpoint
-    openapi_url="/openapi.json", # OpenAPI schema endpoint
+    openapi_url="/openapi.json",  # OpenAPI schema endpoint
     lifespan=lifespan,  # Use async context manager for startup/shutdown
 )
-
 
 # Configure CORS
 app.add_middleware(
@@ -42,8 +42,6 @@ gig_api = GigJobAPI()
 volunteer_api = VolunteerJobAPI()
 application_api = ApplicationAPI()
 user_api = UserAPI()
-
-
 
 app.include_router(job_api.router, prefix="/api/job", tags=["Jobs"])
 app.include_router(gig_api.router, prefix="/api/gig", tags=["Gigs"])
