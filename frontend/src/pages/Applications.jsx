@@ -1,41 +1,55 @@
-import { useState } from 'react';
-import { Container, Typography, Card, CardContent, Grid, Stack, Chip, Box, Button, Snackbar, Alert } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Container, Typography, Box, Button, Snackbar, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-const mockApplications = [
-  {
-    id: 1,
-    jobId: 1,
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    message: 'I have experience in community service and would love to contribute.',
-    status: 'Pending',
-  },
-  {
-    id: 2,
-    jobId: 2,
-    name: 'Jane Smith',
-    email: 'janesmith@example.com',
-    message: 'Passionate about helping others, and flexible with timings.',
-    status: 'Pending',
-  },
-];
+import API from '../api/api'; // Adjust path if needed
 
 const Applications = () => {
   const { jobId } = useParams();
-  const [applications, setApplications] = useState(
-    mockApplications.filter((app) => String(app.jobId) === jobId)
-  );
+  const [applications, setApplications] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const handleAction = (id, newStatus) => {
-    const updated = applications.map((applicant) =>
-      applicant.id === id ? { ...applicant, status: newStatus } : applicant
-    );
-    setApplications(updated);
-    setSnackbarMessage(`Applicant ${newStatus.toLowerCase()} successfully!`);
-    setSnackbarOpen(true);
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const response = await API.get(`/api/application/?job_id=${jobId}`);
+        const apps = response.data;
+
+        const enhancedApps = await Promise.all(
+          apps.map(async (app) => {
+            const userRes = await API.get(`/api/user/${app.applicant}`);
+            const jobRes = await API.get(`/api/job/${app.job_id}`);
+            return {
+              ...app,
+              applicantName: userRes.data.name,
+              jobTitle: jobRes.data.title,
+            };
+          })
+        );
+
+        setApplications(enhancedApps);
+      } catch (error) {
+        console.error('Failed to fetch applications:', error);
+      }
+    };
+
+    fetchApplications();
+  }, [jobId]);
+
+  const handleAction = async (applicationId, action) => {
+    try {
+      await API.post(`/api/application/${applicationId}/${action}`);
+      setSnackbarMessage(`Applicant ${action}ed successfully!`);
+      setSnackbarOpen(true);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app._id === applicationId ? { ...app, selected: action === 'accept' } : app
+        )
+      );
+    } catch (error) {
+      console.error(`Failed to ${action} application:`, error);
+    }
   };
 
   return (
@@ -50,64 +64,35 @@ const Applications = () => {
             No applications yet. 🚀
           </Typography>
         ) : (
-          <Grid container spacing={4}>
-            {applications.map((applicant) => (
-              <Grid item xs={12} key={applicant.id}>
-                <Card sx={{ p: 3, borderRadius: 4, boxShadow: 4 }}>
-                  <CardContent>
-                    <Stack spacing={1}>
-                      <Typography variant="h6" fontWeight="bold">
-                        {applicant.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {applicant.email}
-                      </Typography>
-                      <Typography variant="body2" mt={1}>
-                        {applicant.message}
-                      </Typography>
-
-                      <Box mt={2}>
-                        <Chip
-                          label={applicant.status}
-                          size="small"
-                          color={
-                            applicant.status === 'Pending'
-                              ? 'warning'
-                              : applicant.status === 'Accepted'
-                              ? 'success'
-                              : 'error'
-                          }
-                          sx={{ fontWeight: 'bold' }}
-                        />
-                      </Box>
-
-                      {/* Accept/Reject Buttons */}
-                      {applicant.status === 'Pending' && (
-                        <Stack direction="row" spacing={2} mt={3}>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => handleAction(applicant.id, 'Accepted')}
-                            fullWidth
-                          >
-                            Accept
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => handleAction(applicant.id, 'Rejected')}
-                            fullWidth
-                          >
-                            Reject
-                          </Button>
-                        </Stack>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Applicant Name</TableCell>
+                  <TableCell>Job Title</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {applications.map((app) => (
+                  <TableRow key={app._id}>
+                    <TableCell>{app.applicantName}</TableCell>
+                    <TableCell>{app.jobTitle}</TableCell>
+                    <TableCell>{app.selected ? 'Accepted' : 'Pending'}</TableCell>
+                    <TableCell>
+                      {!app.selected && (
+                        <>
+                          <Button color="success" onClick={() => handleAction(app._id, 'accept')}>Accept</Button>
+                          <Button color="error" onClick={() => handleAction(app._id, 'reject')}>Reject</Button>
+                        </>
                       )}
-                    </Stack>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
 
         {/* Snackbar */}

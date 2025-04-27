@@ -57,9 +57,9 @@ class User(BaseModel):
     rating: int
     phone: int = None
     email: str
-    photo_b64: str = None
+    photo_b64: Optional[str] = None
     type: str  # job_seeker, job_poster
-    organization: str = None
+    organization: Optional[str] = None
 
     class Config:
         validate_by_name = True

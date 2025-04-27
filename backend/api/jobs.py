@@ -42,4 +42,4 @@ class ApplicationAPI(BaseCRUDAPI[Application]):
 
 class UserAPI(BaseCRUDAPI[User]):
     def __init__(self):
-        super().__init__(User, "users")
+        super().__init__(User, "user")

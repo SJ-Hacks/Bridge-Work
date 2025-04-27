@@ -150,7 +150,7 @@ Content-Type: application/json
 
 
 ### reject  application
-GET http://localhost:8000/api/user
+GET http://localhost:8000/api/user/680e523e959200839d95d748
 Content-Type: application/json
 
 ### reject  application

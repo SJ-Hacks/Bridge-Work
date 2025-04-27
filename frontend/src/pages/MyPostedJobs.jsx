@@ -128,7 +128,7 @@ const MyPostedJobs = () => {
                                             color="secondary"
                                             size="small"
                                             fullWidth
-                                            onClick={() => navigate(`/applications/${job.id}`)}
+                                            onClick={() => navigate(`/applications/${job._id}`)}
                                         >
                                             View Applicants
                                         </Button>
