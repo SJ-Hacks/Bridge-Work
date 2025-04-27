@@ -1,6 +1,6 @@
 from api.base import BaseCRUDAPI, T
 from fastapi import Body
-from models import GigJob, VolunteerJob, Job, PyObjectId
+from models import GigJob, VolunteerJob, Job, PyObjectId, User
 from models import Application
 
 
@@ -19,26 +19,30 @@ class VolunteerJobAPI(BaseCRUDAPI[VolunteerJob]):
         super().__init__(VolunteerJob, "volunteers")
 
 
-class ApplicationCrud(BaseCRUDAPI[Application]):
+class ApplicationAPI(BaseCRUDAPI[Application]):
     def __init__(self):
         super().__init__(Application, "application")
-        # self.router.put("/{item_id}/accept", response_model=self.model)(self.accept)
-        # self.router.put("/{item_id}/reject", response_model=self.model)(self.reject)
 
-    # async def accept(self, item_id: PyObjectId, body: dict = Body(...)):
-    #     document = await self.db.db[self.collection_name].find_one({"_id": item_id})
-    #     if not document:
-    #         raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
-    #     document["status"] = "accepted"
-    #     await self.db.db[self.collection_name].update_one({"_id": item_id}, {"$set": document})
-    #     return self.model(**document)
-    #
-    # async def reject(self, item_id: PyObjectId, body: dict = Body(...)):
-    #     document = await self.db.db[self.collection_name].find_one({"_id": item_id})
-    #     if not document:
-    #         raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
-    #     document["status"] = "accepted"
-    #     await self.db.db[self.collection_name].update_one({"_id": item_id}, {"$set": document})
-    #     return self.model(**document)
+        self.router.patch("/{item_id}/accept", response_model=self.model)(self.accept)
+        self.router.patch("/{item_id}/reject", response_model=self.model)(self.reject)
 
+    async def create(self, item: Application = Body(...)):
+        document = item.model_dump(by_alias=True)
+        result = await self.db.db[self.collection_name].insert_one(document)
+        return await self.get_one(result.inserted_id)
+
+    async def accept(self, item_id: PyObjectId):
+        data = {"selected": True}
+        return await self.patch(item_id, data)
+
+    async def reject(self, item_id: PyObjectId):
+        data = {"selected": False}
+        return await self.patch(item_id, data)
+
+
+
+
+class UserAPI(BaseCRUDAPI[User]):
+    def __init__(self):
+        super().__init__(User, "users")
 

@@ -40,7 +40,7 @@ app.add_middleware(
 job_api = JobAPI()
 gig_api = GigJobAPI()
 volunteer_api = VolunteerJobAPI()
-application_api = ApplicationCrud()
+application_api = ApplicationAPI()
 
 
 

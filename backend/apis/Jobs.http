@@ -23,7 +23,10 @@ Content-Type: application/json
   "is_active": true,
   "pay": 120000,
   "organization": "Tech Corp",
-  "skills": ["Python", "FastAPI"]
+  "skills": [
+    "Python",
+    "FastAPI"
+  ]
 }
 
 ###
@@ -40,7 +43,11 @@ Content-Type: application/json
   "is_active": true,
   "pay": 150000,
   "organization": "Tech Corp",
-  "skills": ["Python", "FastAPI", "Leadership"]
+  "skills": [
+    "Python",
+    "FastAPI",
+    "Leadership"
+  ]
 }
 
 ###
@@ -70,7 +77,10 @@ Content-Type: application/json
   "duration": "2 weeks",
   "pay": 500,
   "organization": "Content Creators Inc.",
-  "skills": ["Writing", "SEO"]
+  "skills": [
+    "Writing",
+    "SEO"
+  ]
 }
 
 ###
@@ -93,5 +103,48 @@ Content-Type: application/json
   "is_active": true,
   "pay": 120000,
   "organization": "Local Community Center",
-  "skills": ["Event Management", "Communication"]
+  "skills": [
+    "Event Management",
+    "Communication"
+  ]
 }
+
+
+### Create a new application
+POST http://localhost:8000/api/application
+Content-Type: application/json
+
+{
+  "job_id": "680d9b50de670faf3e8cf6a7",
+  "applicant": "680d9b50de670faf3e8cf6a7",
+  "poster": "680d9b50de670faf3e8cf6a7"
+}
+
+
+
+### get all  applications
+GET http://localhost:8000/api/application?selected=true
+Content-Type: application/json
+
+
+
+### get all  applications
+GET http://localhost:8000/api/application?job_id=680d9b50de670faf3e8cf6a7
+Content-Type: application/json
+
+
+
+### get one  applications
+GET http://localhost:8000/api/application/680dba881e930fe215d6a3ff
+Content-Type: application/json
+
+
+### accpet  application
+PATCH http://localhost:8000/api/application/680dba881e930fe215d6a3ff/accept
+Content-Type: application/json
+
+
+### reject  application
+PATCH http://localhost:8000/api/application/680dba881e930fe215d6a3ff/reject
+Content-Type: application/json
+

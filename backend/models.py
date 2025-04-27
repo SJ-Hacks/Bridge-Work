@@ -3,20 +3,6 @@ from typing import Optional, Annotated, Any, Callable
 from datetime import datetime
 from bson import ObjectId
 from typing import List
-
-
-class JobBase(BaseModel):
-    title: str
-    description: str
-    location: str
-    points: int
-    is_active: bool = True
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    pay: int
-    organization: str
-    skills: List[str]
-
-
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 
@@ -48,26 +34,31 @@ PyObjectId = Annotated[
 ]
 
 
-class UserBase(BaseModel):
+class JobBase(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    title: str
+    description: str
+    location: str
+    points: int
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    pay: int
+    organization: str
+    skills: List[str]
+
+
+class User(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     about_me: str
     location: str
     rating: int
     phone: int
     email: str
-
-
-class HLUserBase(BaseModel):
     photo_b64: str
-
-    class Config:
-        validate_by_name = True
-        arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}
-
-
-class PosterUserBase(BaseModel):
+    type: str  # job_seeker, job_poster
     organization: str
+    type: str = 'job_poster'
 
     class Config:
         validate_by_name = True
@@ -76,7 +67,6 @@ class PosterUserBase(BaseModel):
 
 
 class Job(JobBase):
-    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
