@@ -1,0 +1,32 @@
+services:
+  backend:
+    image: your-dockerhub-username/bridgework-backend:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://root:example@mongodb:27017/bridgework_db
+    depends_on:
+      - mongodb
+
+  frontend:
+    image: your-dockerhub-username/bridgework-frontend:latest
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  mongodb:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:
