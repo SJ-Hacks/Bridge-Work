@@ -1,126 +1,167 @@
-import { Container, Typography, Box, Button, Grid, Divider } from '@mui/material';
+import { Typography, Box, Button, Grid, Divider, Container } from '@mui/material';
 import { WorkOutline, AssignmentTurnedIn, FavoriteBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import helpingHands from "../assets/helping-hands.png";
+import helpingHands from "../assets/helping-hands.svg";
+import blobShape from "../assets/blob.svg";
+import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
 const Home = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+
+  // Typing animation
+  const fullText = "Every journey forward begins with one step. Find work, rebuild hope, and create the future you deserve.";
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(fullText.slice(0, index + 1));
+      index++;
+      if (index >= fullText.length) clearInterval(interval);
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
       {/* Hero Section */}
-      <Box sx={{ position: 'relative', backgroundColor: '#f9fafb', py: 10, overflow: 'hidden' }}>
+      <Box sx={{ position: 'relative', backgroundColor: 'backgroundLight.main', py: 10, overflow: 'hidden' }}>
         
-        {/* Decorative Blob Background */}
+        {/* Left Side Blob */}
         <Box
           component="img"
-          src="/blob.svg"   // Make sure blob.svg is inside your public/ folder
-          alt="Background Blob"
+          src={blobShape}
+          alt="Decorative Blob"
           sx={{
             position: 'absolute',
-            top: '-50px',
-            left: '-100px',
-            width: '500px',
-            opacity: 0.2,
-            zIndex: 1,
+            top: 0,
+            left: 0,
+            width: { xs: '100px', md: '250px' },
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: 0,
+            opacity: 0.25,
           }}
         />
 
-        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 10 }, position: 'relative', zIndex: 2 }}>
-          <Grid container spacing={6} alignItems="center">
+        {/* Main Content */}
+        <Container maxWidth={false} disableGutters sx={{ position: 'relative', zIndex: 2 }}>
+          <Grid container alignItems="center">
             
-            {/* Left side - Text and Buttons */}
-            <Grid item xs={12} md={6}>
+            {/* Left Text */}
+            <Grid item xs={12} md={6} sx={{ pl: { md: 45 }, pr: { md: 4 } }}>
               <Box sx={{ maxWidth: '500px', mx: { xs: 'auto', md: 0 }, textAlign: { xs: 'center', md: 'left' } }}>
-                <Typography variant="h2" fontWeight="bold" mb={3}>
-                  Step Into Stability and Opportunity
+                <Typography 
+                  variant="h2" 
+                  fontWeight="bold" 
+                  mb={3}
+                  sx={{ color: 'primary.main' }}
+                >
+                  Step into Stability and Opportunity
                 </Typography>
 
-                <Typography variant="body1" color="text.secondary" mb={4}>
-                  Every journey forward begins with one step. Find work, rebuild hope, and create the future you deserve.
+                <Typography 
+                  variant="body1" 
+                  color="text.secondary" 
+                  mb={4}
+                  sx={{ minHeight: '96px' }}
+                >
+                  {displayedText}
                 </Typography>
 
+                {/* Buttons */}
                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  
+                  {/* Find Opportunities Button */}
                   <Button
                     variant="contained"
                     color="primary"
                     size="large"
                     onClick={() => navigate('/gigs')}
-                    sx={{ textTransform: 'none', px: 4 }}
+                    sx={{
+                      textTransform: 'none',
+                      px: 4,
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)', // slight lift
+                      },
+                    }}
                   >
                     Find Opportunities
                   </Button>
+
+                  {/* I Want to Help Button */}
                   <Button
                     variant="outlined"
                     color="primary"
                     size="large"
                     onClick={() => navigate('/volunteering')}
-                    sx={{ textTransform: 'none', px: 4 }}
+                    sx={{
+                      textTransform: 'none',
+                      px: 4,
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)', // slight lift
+                      },
+                    }}
                   >
                     I Want to Help
                   </Button>
+
                 </Box>
               </Box>
             </Grid>
 
-            {/* Right side - Image */}
-            <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+            {/* Right Image */}
+            <Grid item xs={12} md={6}>
               <Box
-                component="img"
-                src={helpingHands}
-                alt="Helping Hands Illustration"
                 sx={{
-                  width: '100%',
-                  maxWidth: '480px',
-                  height: 'auto',
-                  objectFit: 'contain',
-                  mr: { md: 0 }, // This keeps it flushed to right side on large screens
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  height: '100%',
+                  pr: { md: 10 },
                 }}
-              />
+              >
+                <Box
+                  component="img"
+                  src={helpingHands}
+                  alt="Helping Hands Illustration"
+                  sx={{
+                    maxWidth: '700px',
+                    width: '100%',
+                    height: 'auto',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
             </Grid>
 
           </Grid>
         </Container>
       </Box>
 
-      {/* Navigation Section - Gigs / Full-Time / Volunteering */}
+      {/* Navigation Section */}
       <Box mt={8} mb={2}>
         <Container maxWidth="xl">
           <Grid container spacing={0} justifyContent="space-around" alignItems="center">
-            
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button
-                startIcon={<WorkOutline />}
-                variant="text"
-                onClick={() => navigate('/gigs')}
-                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
-              >
+              <Button startIcon={<WorkOutline />} variant="text" onClick={() => navigate('/gigs')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
                 Gigs
               </Button>
             </Grid>
-
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button
-                startIcon={<AssignmentTurnedIn />}
-                variant="text"
-                onClick={() => navigate('/fulltime')}
-                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
-              >
+              <Button startIcon={<AssignmentTurnedIn />} variant="text" onClick={() => navigate('/fulltime')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
                 Full-time work
               </Button>
             </Grid>
-
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button
-                startIcon={<FavoriteBorder />}
-                variant="text"
-                onClick={() => navigate('/volunteering')}
-                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
-              >
+              <Button startIcon={<FavoriteBorder />} variant="text" onClick={() => navigate('/volunteering')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
                 Volunteering
               </Button>
             </Grid>
-
           </Grid>
 
           <Divider sx={{ mt: 2, borderColor: 'lightGrey.main' }} />
