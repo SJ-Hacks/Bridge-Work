@@ -2,12 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from bson import ObjectId
-from pydantic import GetCoreSchemaHandler
-from pydantic.json_schema import JsonSchemaValue
-from pydantic_core import core_schema
-from bson import ObjectId
-
-
+from typing import List
 
 class JobBase(BaseModel):
     title: str
@@ -16,7 +11,34 @@ class JobBase(BaseModel):
     points: int
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    pay: int
+    organization: str
+    applied: bool = False
+    skills: List[str]
 
+class UserBase(BaseModel):
+    name: str
+    about_me: str
+    location: str
+    rating: int
+    phone: int
+    email: str
+
+class HLUserBase(BaseModel):
+    photo_b64: str
+    
+    class Config:
+        validate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+class PosterUserBase(BaseModel):
+    organization: str
+
+    class Config:
+        validate_by_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
 
 class Job(JobBase):
     id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
@@ -26,7 +48,6 @@ class Job(JobBase):
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-
 
 class VolunteerJob(JobBase):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
