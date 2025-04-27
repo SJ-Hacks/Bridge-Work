@@ -1,18 +1,17 @@
 import { Typography, Box, Button, Grid, Divider, Container } from '@mui/material';
 import { WorkOutline, AssignmentTurnedIn, FavoriteBorder } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
-import helpingHands from "../assets/helping-hands.svg";
-import blobShape from "../assets/blob.svg";
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
+import helpingHands from "../assets/helping-hands.svg";
+import blobShape from "../assets/blob.svg";
+import Gigs from './Gigs'; // <-- import Gigs normally
 
 const Home = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
 
-  // Typing animation
   const fullText = "Every journey forward begins with one step. Find work, rebuild hope, and create the future you deserve.";
   const [displayedText, setDisplayedText] = useState('');
+  const [showGigs, setShowGigs] = useState(false); // <-- NEW STATE
 
   useEffect(() => {
     let index = 0;
@@ -79,13 +78,13 @@ const Home = () => {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={() => navigate('/gigs')}
+                    onClick={() => setShowGigs(true)} // <-- NEW CHANGE
                     sx={{
                       textTransform: 'none',
                       px: 4,
                       transition: 'transform 0.3s ease',
                       '&:hover': {
-                        transform: 'translateY(-2px)', // slight lift
+                        transform: 'translateY(-2px)', 
                       },
                     }}
                   >
@@ -97,13 +96,13 @@ const Home = () => {
                     variant="outlined"
                     color="primary"
                     size="large"
-                    onClick={() => navigate('/volunteering')}
+                    onClick={() => console.log("Volunteering clicked")} // (can implement volunteering later)
                     sx={{
                       textTransform: 'none',
                       px: 4,
                       transition: 'transform 0.3s ease',
                       '&:hover': {
-                        transform: 'translateY(-2px)', // slight lift
+                        transform: 'translateY(-2px)', 
                       },
                     }}
                   >
@@ -148,17 +147,32 @@ const Home = () => {
         <Container maxWidth="xl">
           <Grid container spacing={0} justifyContent="space-around" alignItems="center">
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button startIcon={<WorkOutline />} variant="text" onClick={() => navigate('/gigs')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
+              <Button
+                startIcon={<WorkOutline />}
+                variant="text"
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+                onClick={() => setShowGigs(true)} // <-- SAME here
+              >
                 Gigs
               </Button>
             </Grid>
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button startIcon={<AssignmentTurnedIn />} variant="text" onClick={() => navigate('/fulltime')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
+              <Button
+                startIcon={<AssignmentTurnedIn />}
+                variant="text"
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+                onClick={() => console.log('Full-time work clicked')}
+              >
                 Full-time work
               </Button>
             </Grid>
             <Grid item xs={12} sm={4} textAlign="center">
-              <Button startIcon={<FavoriteBorder />} variant="text" onClick={() => navigate('/volunteering')} sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}>
+              <Button
+                startIcon={<FavoriteBorder />}
+                variant="text"
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+                onClick={() => console.log('Volunteering clicked')}
+              >
                 Volunteering
               </Button>
             </Grid>
@@ -167,6 +181,13 @@ const Home = () => {
           <Divider sx={{ mt: 2, borderColor: 'lightGrey.main' }} />
         </Container>
       </Box>
+
+      {/* Conditionally render Gigs Section */}
+      {showGigs && (
+        <Box mt={8} mb={8}>
+          <Gigs />
+        </Box>
+      )}
     </>
   );
 };
