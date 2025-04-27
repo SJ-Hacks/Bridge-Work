@@ -5,6 +5,9 @@ import Gigs from './pages/Gigs';
 import Volunteering from './pages/Volunteering';
 import FullTime from './pages/FullTime';
 import Rewards from './pages/Rewards';
+import Profile from './pages/Profile';
+import Leaderboard from './pages/Leaderboard';
+
 
 
 
@@ -15,10 +18,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/gigs" element={<Gigs />} />
-        <Route path="/profile" element={<h1>Profile Page</h1>} />
         <Route path="/volunteering" element={<Volunteering />} />
         <Route path="/fulltime" element={<FullTime />} />
         <Route path="/rewards" element={<Rewards />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
       </Routes>
     </>
   );
