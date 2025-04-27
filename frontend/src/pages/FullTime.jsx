@@ -60,9 +60,9 @@ const FullTime = () => {
 
   return (
     <Container sx={{ mt: 8 }}>
-      <Typography variant="h4" color="primary" gutterBottom fontWeight="bold" textAlign="center">
-        Full-Time Jobs
-      </Typography>
+    <Typography color="primary" gutterBottom textAlign="left" sx={{pb:{md:5}, pl:{md:14}}}>
+    Full-time jobs are stable, professional employment opportunities to help you build your long-term career.
+    </Typography>
 
       <Grid container spacing={4} justifyContent="center">
         {fullTimeJobs.map((job) => (

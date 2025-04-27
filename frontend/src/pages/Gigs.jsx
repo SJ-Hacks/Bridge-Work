@@ -105,8 +105,8 @@ const Gigs = () => {
 
   return (
     <Container sx={{ mt: 8 }}>
-      <Typography variant="h4" color="primary" gutterBottom fontWeight="bold" textAlign="center">
-        Available Gigs
+      <Typography color="primary" gutterBottom textAlign="left" sx={{pb:{md:5}, pl:{md:14}}}>
+        Gigs are temporary one-time or recurring jobs you can get hired for and paid by the hour.
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
