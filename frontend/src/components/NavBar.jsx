@@ -1,6 +1,7 @@
 import { AppBar, Toolbar, Typography, Button, Box, Container, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import icon from '../assets/icon.svg'; // <-- import your SVG logo here
 
 const NavBar = () => {
   const [firstName, setFirstName] = useState(null);
@@ -28,19 +29,27 @@ const NavBar = () => {
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
             
-            {/* Title - BridgeWorks */}
-            <Typography
-              variant="h6"
-              component={Link}
-              to="/"
-              sx={{
-                textTransform: 'none',
-                color: 'primary.main',
-                textDecoration: 'none',
-              }}
-            >
-              BridgeWorks
-            </Typography>
+            {/* Title + Icon */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                component="img"
+                src={icon}
+                alt="Logo"
+                sx={{ width: 30, height: 30 }}
+              />
+              <Typography
+                variant="h6"
+                component={Link}
+                to="/"
+                sx={{
+                  textTransform: 'none',
+                  color: 'primary.main',
+                  textDecoration: 'none',
+                }}
+              >
+                BridgeWorks
+              </Typography>
+            </Box>
 
             {/* Right side Buttons */}
             <Box sx={{ display: 'flex', gap: 3 }}>
