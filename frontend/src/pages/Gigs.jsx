@@ -1,28 +1,45 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGigs } from "../store/gigsSlice";
+import { createApplication } from "../store/applicationSlice";
+import { useUser } from "../context/UserContext";
+
 import {
-  Card, CardContent, CardActions, Button, Typography, Grid, Container, Stack,
-  Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, CircularProgress
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Typography,
+  Grid,
+  Container,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
+
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EventRepeatIcon from "@mui/icons-material/EventRepeat";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-// Helper function to split description into ~60 character lines
+// Helper function to split text nicely
 const splitIntoLines = (text, maxLineLength = 50) => {
-  const words = text.split(' ');
+  const words = text.split(" ");
   const lines = [];
-  let currentLine = '';
+  let currentLine = "";
 
-  words.forEach(word => {
+  words.forEach((word) => {
     if ((currentLine + word).length <= maxLineLength) {
-      currentLine += word + ' ';
+      currentLine += word + " ";
     } else {
       lines.push(currentLine.trim());
-      currentLine = word + ' ';
+      currentLine = word + " ";
     }
   });
 
@@ -35,8 +52,9 @@ const splitIntoLines = (text, maxLineLength = 50) => {
 
 const Gigs = () => {
   const dispatch = useDispatch();
-  const { gigs, loading, error } = useSelector((state) => state.gigs);
+  const { user } = useUser();
 
+  const { gigs, status } = useSelector((state) => state.gigs);
   const [open, setOpen] = useState(false);
   const [selectedGig, setSelectedGig] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -55,28 +73,41 @@ const Gigs = () => {
     setSelectedGig(null);
   };
 
-  const handleConfirm = () => {
-    setSnackbarOpen(true);
-    handleClose();
+  const handleConfirmApply = () => {
+    if (selectedGig) {
+      dispatch(
+        createApplication({
+          job_id: selectedGig._id,
+          applicant: user._id,
+          poster: selectedGig.poster || user._id, // fallback to user if poster is not there
+        })
+      );
+      setSnackbarOpen(true);
+      handleClose();
+    }
   };
+
+  if (status === "loading") {
+    return (
+      <Container sx={{ mt: 8 }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (status === "failed") {
+    return (
+      <Container sx={{ mt: 8 }}>
+        <Typography color="error">Failed to load gigs.</Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ mt: 8 }}>
       <Typography variant="h4" color="primary" gutterBottom fontWeight="bold" textAlign="center">
         Available Gigs
       </Typography>
-
-      {loading && (
-        <Stack alignItems="center" justifyContent="center" sx={{ mt: 4 }}>
-          <CircularProgress />
-        </Stack>
-      )}
-
-      {error && (
-        <Stack alignItems="center" justifyContent="center" sx={{ mt: 4 }}>
-          <Alert severity="error">{error}</Alert>
-        </Stack>
-      )}
 
       <Grid container spacing={4} justifyContent="center">
         {gigs.map((gig) => (
@@ -104,41 +135,33 @@ const Gigs = () => {
                   {gig.title}
                 </Typography>
                 <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                  {gig.organization || "Unknown Organization"}
+                  {gig.organization}
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing={1} mb={1}>
                   <MonetizationOnIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: "1rem" }}>
-                    ${gig.pay} 
-                  </Typography>
+                  <Typography variant="body2">{gig.pay}</Typography>
                 </Stack>
 
                 <Stack direction="row" alignItems="flex-start" spacing={1} mb={1}>
                   <DescriptionIcon fontSize="small" sx={{ mt: "2px" }} />
                   <Stack>
                     {splitIntoLines(gig.description).map((line, index) => (
-                      <Typography key={index} variant="body2" sx={{ fontSize: "1rem" }}>
+                      <Typography key={index} variant="body2">
                         {line}
                       </Typography>
                     ))}
                   </Stack>
                 </Stack>
 
-                {gig.duration && (
-                  <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                    <AccessTimeIcon fontSize="small" />
-                    <Typography variant="body2" sx={{ fontSize: "1rem" }}>
-                      {gig.duration}
-                    </Typography>
-                  </Stack>
-                )}
+                <Stack direction="row" alignItems="center" spacing={1} mb={1}>
+                  <AccessTimeIcon fontSize="small" />
+                  <Typography variant="body2">{gig.time || "Flexible"}</Typography>
+                </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <LocationOnIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: "1rem" }}>
-                    {gig.location}
-                  </Typography>
+                  <Typography variant="body2">{gig.location}</Typography>
                 </Stack>
               </CardContent>
 
@@ -152,7 +175,7 @@ const Gigs = () => {
         ))}
       </Grid>
 
-      {/* Apply Now Modal */}
+      {/* Apply Modal */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Apply for Gig</DialogTitle>
         <DialogContent>
@@ -174,7 +197,7 @@ const Gigs = () => {
           <Button onClick={handleClose} color="secondary">
             Cancel
           </Button>
-          <Button onClick={handleConfirm} color="primary" variant="contained">
+          <Button onClick={handleConfirmApply} color="primary" variant="contained">
             Confirm Apply
           </Button>
         </DialogActions>
