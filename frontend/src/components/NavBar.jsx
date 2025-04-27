@@ -4,16 +4,23 @@ import { useEffect, useState } from 'react';
 
 const NavBar = () => {
   const [firstName, setFirstName] = useState(null);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     const storedName = localStorage.getItem('userFirstName');
-    console.log("NavBar useEffect -> storedName:", storedName); // 🪵 logging the localStorage value
+    const storedRole = localStorage.getItem('userRole');
+    console.log("NavBar useEffect -> storedName:", storedName);
+    console.log("NavBar useEffect -> storedRole:", storedRole);
     if (storedName) {
       setFirstName(storedName);
     }
+    if (storedRole) {
+      setUserRole(storedRole);
+    }
   }, []);
 
-  console.log("NavBar Render -> firstName state:", firstName); // 🪵 logging the current state
+  console.log("NavBar Render -> firstName state:", firstName);
+  console.log("NavBar Render -> userRole state:", userRole);
 
   return (
     <AppBar position="static" elevation={0} color="transparent" sx={{ backgroundColor: 'background.default' }}>
@@ -37,56 +44,70 @@ const NavBar = () => {
 
             {/* Right side Buttons */}
             <Box sx={{ display: 'flex', gap: 3 }}>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/gigs"
-                sx={{ textTransform: 'none', color: 'black' }}
-              >
-                Services
-              </Button>
+
+              {userRole === 'job_poster' && (
+                <>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/post-job"
+                    sx={{ textTransform: 'none', color: 'black' }}
+                  >
+                    Post Job
+                  </Button>
+
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/my-posted-jobs"
+                    sx={{ textTransform: 'none', color: 'black' }}
+                  >
+                    My Postings
+                  </Button>
+                </>
+              )}
 
               {firstName ? (
-  <Button
-    color="inherit"
-    sx={{ textTransform: 'none', color: 'black', fontWeight: 'bold' }}
-    component={Link}
-    to="/profile"
-  >
-    Hi, {firstName}
-            </Button>
-          ) : (
-            <>
-              <Button
-                color="inherit"
-                component={Link}
-                to="/signin"
-                sx={{ textTransform: 'none', color: 'black' }}
-              >
-                Sign In / Sign Up
-              </Button>
+                <Button
+                  color="inherit"
+                  sx={{ textTransform: 'none', color: 'black', fontWeight: 'bold' }}
+                  component={Link}
+                  to="/profile"
+                >
+                  Hi, {firstName}
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/signin"
+                    sx={{ textTransform: 'none', color: 'black' }}
+                  >
+                    Sign In / Sign Up
+                  </Button>
 
-              <Button
-                variant="outlined"
-                component={Link}
-                to="/signin"
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 500,
-                  borderWidth: 1,
-                  borderColor: 'primary.main',
-                  color: 'primary.main',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                  },
-                }}
-              >
-                Become a Job Provider
-              </Button>
-            </>
-          )}
+                  <Button
+                    variant="outlined"
+                    component={Link}
+                    to="/signin"
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      borderWidth: 1,
+                      borderColor: 'primary.main',
+                      color: 'primary.main',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: 'primary.main',
+                        color: 'white',
+                      },
+                    }}
+                  >
+                    Become a Job Provider
+                  </Button>
+                </>
+              )}
             </Box>
           </Toolbar>
 
