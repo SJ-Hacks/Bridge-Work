@@ -63,5 +63,4 @@ async def google_callback(body: dict = Body(...)) -> dict:
         "email": user["email"],
         "name": user["name"],
         "type": user.get("type")
-
     }

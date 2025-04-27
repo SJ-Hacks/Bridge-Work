@@ -12,7 +12,6 @@ const SignInSignUp = () => {
         console.log('Google profile:', decoded);
 
 
-
         try {
             console.log("Start off")
             const response = await API.post('/auth/google/login', {
@@ -24,10 +23,12 @@ const SignInSignUp = () => {
             localStorage.setItem('userRole', response.data.type);
             localStorage.setItem('userId', response.data.id);
             setGoogleUser(decoded);
-            window.location.href = '/';
+
         } catch (error) {
             console.error('Error calling backend:', error.response?.data || error.message);
         }
+
+        // window.location.href = '/';
     };
 
     const handleRoleSelect = (role) => {
