@@ -19,7 +19,7 @@ import SignInSignUp from './pages/SignInSignUp'; // <-- Import your new login pa
 
 function App() {
   return (
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <GoogleOAuthProvider clientId="1026581693709-gnl3aqd28jsskbl4dovcn3ncaejrf0oh.apps.googleusercontent.com">
     <>
       <NavBar />
       <Routes>

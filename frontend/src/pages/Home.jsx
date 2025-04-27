@@ -14,7 +14,7 @@ const Home = () => {
 
   const fullText = "Every journey forward begins with one step. Find work, rebuild hope, and create the future you deserve.";
   const [displayedText, setDisplayedText] = useState('');
-  const [sectionToShow, setSectionToShow] = useState('gigs');
+  const [sectionToShow, setSectionToShow] = useState('fulltime'); // 🌟 changed default to fulltime
 
   useEffect(() => {
     let index = 0;
@@ -25,7 +25,6 @@ const Home = () => {
     }, 30);
     return () => clearInterval(interval);
   }, []);
-  
 
   const scrollToNav = () => {
     if (navRef.current) {
@@ -43,13 +42,21 @@ const Home = () => {
   };
 
   const handleShowFullTime = () => {
-    setSectionToShow('fulltime');
-    setTimeout(scrollToNav, 100);
+    if (sectionToShow !== 'fulltime') {
+      setSectionToShow('fulltime');
+      setTimeout(scrollToNav, 100);
+    } else {
+      scrollToNav();
+    }
   };
 
   const handleShowVolunteer = () => {
-    setSectionToShow('volunteer');
-    setTimeout(scrollToNav, 100);
+    if (sectionToShow !== 'volunteer') {
+      setSectionToShow('volunteer');
+      setTimeout(scrollToNav, 100);
+    } else {
+      scrollToNav();
+    }
   };
 
   return (
@@ -92,7 +99,7 @@ const Home = () => {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={handleShowGigs}
+                    onClick={handleShowFullTime}
                     sx={{
                       textTransform: 'none',
                       px: 4,
@@ -151,6 +158,25 @@ const Home = () => {
       <Box ref={navRef} mt={8} mb={2}>
         <Container maxWidth="xl">
           <Grid container spacing={0} justifyContent="space-around" alignItems="center">
+            {/* Full-time work Button - now first */}
+            <Grid item xs={12} sm={4} textAlign="center">
+              <Button
+                startIcon={<AssignmentTurnedIn />}
+                variant="text"
+                onClick={handleShowFullTime}
+                sx={{
+                  fontSize: '1.1rem',
+                  color: 'black',
+                  textTransform: 'none',
+                  borderBottom: sectionToShow === 'fulltime' ? `2px solid ${theme.palette.primary.main}` : '2px solid transparent',
+                  borderRadius: 0,
+                  pb: 1,
+                }}
+              >
+                Full-time work
+              </Button>
+            </Grid>
+
             {/* Gigs Button */}
             <Grid item xs={12} sm={4} textAlign="center">
               <Button
@@ -167,25 +193,6 @@ const Home = () => {
                 }}
               >
                 Gigs
-              </Button>
-            </Grid>
-
-            {/* Full-time work Button */}
-            <Grid item xs={12} sm={4} textAlign="center">
-              <Button
-                startIcon={<AssignmentTurnedIn />}
-                variant="text"
-                onClick={handleShowFullTime}
-                sx={{
-                  fontSize: '1.1rem',
-                  color: 'black',
-                  textTransform: 'none',
-                  borderBottom: sectionToShow === 'fulltime' ? `2px solid ${theme.palette.primary.main}` : '2px solid transparent',
-                  borderRadius: 0,
-                  pb: 1,
-                }}
-              >
-                Full-time work
               </Button>
             </Grid>
 
@@ -214,14 +221,14 @@ const Home = () => {
       </Box>
 
       {/* Section Display */}
-      {sectionToShow === 'gigs' && (
-        <Box mt={8} mb={8}>
-          <Gigs />
-        </Box>
-      )}
       {sectionToShow === 'fulltime' && (
         <Box mt={8} mb={8}>
           <FullTime />
+        </Box>
+      )}
+      {sectionToShow === 'gigs' && (
+        <Box mt={8} mb={8}>
+          <Gigs />
         </Box>
       )}
       {sectionToShow === 'volunteer' && (
