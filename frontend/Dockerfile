@@ -8,6 +8,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 
+# Set node memory limit
+ENV NODE_OPTIONS=--max-old-space-size=2048
+
 # Copy the entire frontend project and build it
 COPY . .
 RUN npm run build
