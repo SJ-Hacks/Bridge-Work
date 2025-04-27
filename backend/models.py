@@ -17,6 +17,7 @@ class JobBase(BaseModel):
     applied: bool = False
     skills: List[str]
 
+
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
 
@@ -46,6 +47,7 @@ class _ObjectIdPydanticAnnotation:
 PyObjectId = Annotated[
     ObjectId, _ObjectIdPydanticAnnotation
 ]
+
 
 class UserBase(BaseModel):
     name: str
@@ -104,3 +106,11 @@ class GigJob(JobBase):
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
+
+class Application(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    job_id: PyObjectId  # Job
+    applicant: PyObjectId  # User
+    poster: PyObjectId  # User
+    active: bool = True
+    selected: bool = False

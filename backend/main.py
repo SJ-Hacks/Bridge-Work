@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from backend.database import Database
-from backend.api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI
+from backend.api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI, ApplicationCrud
 
 from database import db
 from models import Job
@@ -41,7 +41,11 @@ app.add_middleware(
 job_api = JobAPI()
 gig_api = GigJobAPI()
 volunteer_api = VolunteerJobAPI()
+application_api = ApplicationCrud()
+
+
 
 app.include_router(job_api.router, prefix="/api/job", tags=["Jobs"])
 app.include_router(gig_api.router, prefix="/api/gig", tags=["Gigs"])
 app.include_router(volunteer_api.router, prefix="/api/volunteer", tags=["Volunteers"])
+app.include_router(application_api.router, prefix="/api/application", tags=["Application"])

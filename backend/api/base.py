@@ -27,6 +27,7 @@ class BaseCRUDAPI(Generic[T]):
         self.model = model
         self.collection_name = collection_name
         self.router = APIRouter()
+        # self.router = APIRouter(dependencies=[Depends(get_current_user)])
         self.db = db
 
         self.router.get("/", response_model=PaginatedResponse)(self.get_all)
@@ -84,3 +85,4 @@ class BaseCRUDAPI(Generic[T]):
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
         return {"message": f"{self.model.__name__} deleted successfully"}
+
