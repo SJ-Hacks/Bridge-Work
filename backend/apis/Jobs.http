@@ -65,7 +65,7 @@ Content-Type: application/json
 ###
 
 ### Create a new gig job
-POST http://localhost:8000/api/gig
+POST http://ec2-54-89-21-90.compute-1.amazonaws.com:8000/api/gig
 Content-Type: application/json
 
 {
