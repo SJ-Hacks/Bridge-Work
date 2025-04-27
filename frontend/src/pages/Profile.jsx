@@ -65,7 +65,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                const response = await API.get('/api/application/?selected=true'); //todo add  applicant id, selected true
+                const response = await API.get('/api/application/?selected=true');
 
                 // Replace with actual applicant ID
                 // Assuming response.data is an array of applications

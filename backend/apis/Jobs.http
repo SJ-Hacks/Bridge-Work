@@ -1,6 +1,6 @@
 
 ### Get all jobs
-GET http://localhost:8000/api/job
+GET http://localhost:8000/api/job?job_poster=680dfa0cd7eb679e7fc65215
 Content-Type: application/json
 
 ###
@@ -129,7 +129,7 @@ Content-Type: application/json
 
 
 ### get all  applications
-GET http://localhost:8000/api/application?job_id=680d9b50de670faf3e8cf6a7
+GET http://localhost:8000/api/application/?poster=680d9b50de670faf3e8cf6a7
 Content-Type: application/json
 
 

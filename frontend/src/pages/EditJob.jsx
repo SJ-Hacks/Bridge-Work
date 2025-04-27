@@ -7,7 +7,7 @@ const jobTypes = [
   { label: 'Recurring', value: 'recurring' },
 ];
 
-const tagOptions = ['Paid', 'Volunteer', 'Youth Preferred'];
+const tagOptions = ['Paid', 'Volunteer', 'Gig'];
 
 // Mock data (later replace with real API call)
 const mockJobData = {
