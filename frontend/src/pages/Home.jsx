@@ -1,6 +1,7 @@
-import { Container, Typography, Box, Button, TextField, Grid, Card, Stack } from '@mui/material';
-import { Search as SearchIcon, WorkOutline, AssignmentTurnedIn, FavoriteBorder } from '@mui/icons-material';
+import { Container, Typography, Box, Button, Grid, Divider } from '@mui/material';
+import { WorkOutline, AssignmentTurnedIn, FavoriteBorder } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import helpingHands from "../assets/helping-hands.png";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -8,173 +9,121 @@ const Home = () => {
   return (
     <>
       {/* Hero Section */}
-      <Container sx={{ mt: 10, textAlign: 'center' }}>
-        <Typography variant="h4" fontWeight="bold" mb={2}>
-          Get Part Time / Full Time Jobs
-        </Typography>
-        <Typography variant="h6" color="text.secondary" mb={4}>
-          Find quick gigs, work for your community, build your future
-        </Typography>
+      <Box sx={{ position: 'relative', backgroundColor: '#f9fafb', py: 10, overflow: 'hidden' }}>
+        
+        {/* Decorative Blob Background */}
+        <Box
+          component="img"
+          src="/blob.svg"   // Make sure blob.svg is inside your public/ folder
+          alt="Background Blob"
+          sx={{
+            position: 'absolute',
+            top: '-50px',
+            left: '-100px',
+            width: '500px',
+            opacity: 0.2,
+            zIndex: 1,
+          }}
+        />
 
-        <Box display="flex" justifyContent="center" alignItems="center" mb={8}>
-          <TextField
-            placeholder="Search for jobs..."
-            variant="outlined"
-            size="small"
-            sx={{ width: '50%', backgroundColor: 'white' }}
-            InputProps={{
-              endAdornment: <SearchIcon color="primary" />,
-            }}
-          />
-        </Box>
-      </Container>
-
-      {/* Icon Features */}
-      <Container sx={{ textAlign: 'center', mb: 8 }}>
-        <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={4}>
-            <WorkOutline fontSize="large" />
-            <Typography variant="subtitle1" mt={1}>
-              Find Gigs Easily
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <AssignmentTurnedIn fontSize="large" />
-            <Typography variant="subtitle1" mt={1}>
-              Apply in Seconds
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <FavoriteBorder fontSize="large" />
-            <Typography variant="subtitle1" mt={1}>
-              Support Community
-            </Typography>
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Explore Opportunities Section */}
-      <Box sx={{ backgroundColor: '#f0f4f8', py: 8 }}>
-        <Container>
-          <Typography variant="h5" fontWeight="bold" textAlign="center" mb={4}>
-            Explore Opportunities
-          </Typography>
-
-          <Grid container spacing={4} justifyContent="center">
-            {/* Gigs Card */}
-            <Grid item xs={12} sm={4} md={4}>
-              <Card
-                sx={{
-                  height: 300,
-                  p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderRadius: 4,
-                  boxShadow: 6,
-                  backgroundColor: '#ffffff',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: 12,
-                  },
-                }}
-              >
-                <WorkOutline fontSize="large" />
-                <Typography variant="h6" fontWeight="bold" mt={2}>
-                  Gigs
+        <Container maxWidth={false} disableGutters sx={{ px: { xs: 2, md: 10 }, position: 'relative', zIndex: 2 }}>
+          <Grid container spacing={6} alignItems="center">
+            
+            {/* Left side - Text and Buttons */}
+            <Grid item xs={12} md={6}>
+              <Box sx={{ maxWidth: '500px', mx: { xs: 'auto', md: 0 }, textAlign: { xs: 'center', md: 'left' } }}>
+                <Typography variant="h2" fontWeight="bold" mb={3}>
+                  Step Into Stability and Opportunity
                 </Typography>
-                <Typography variant="body2" textAlign="center" mt={1}>
-                  Quick, flexible jobs. Get hired fast and earn hourly.
+
+                <Typography variant="body1" color="text.secondary" mb={4}>
+                  Every journey forward begins with one step. Find work, rebuild hope, and create the future you deserve.
                 </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2 }}
-                  onClick={() => navigate('/gigs')}
-                >
-                  Browse Gigs
-                </Button>
-              </Card>
+
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={() => navigate('/gigs')}
+                    sx={{ textTransform: 'none', px: 4 }}
+                  >
+                    Find Opportunities
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="large"
+                    onClick={() => navigate('/volunteering')}
+                    sx={{ textTransform: 'none', px: 4 }}
+                  >
+                    I Want to Help
+                  </Button>
+                </Box>
+              </Box>
             </Grid>
 
-            {/* Volunteering Work Card */}
-            <Grid item xs={12} sm={4} md={4}>
-              <Card
+            {/* Right side - Image */}
+            <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'center', md: 'right' } }}>
+              <Box
+                component="img"
+                src={helpingHands}
+                alt="Helping Hands Illustration"
                 sx={{
-                  height: 300,
-                  p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderRadius: 4,
-                  boxShadow: 6,
-                  backgroundColor: '#ffffff',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: 12,
-                  },
+                  width: '100%',
+                  maxWidth: '480px',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  mr: { md: 0 }, // This keeps it flushed to right side on large screens
                 }}
-              >
-                <FavoriteBorder fontSize="large" />
-                <Typography variant="h6" fontWeight="bold" mt={2}>
-                  Volunteering Work
-                </Typography>
-                <Typography variant="body2" textAlign="center" mt={1}>
-                  Help the community, gain skills, and earn rewards.
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2 }}
-                  onClick={() => navigate('/volunteering')}
-                >
-                  Browse Volunteering
-                </Button>
-              </Card>
+              />
             </Grid>
 
-            {/* Full-Time Work Card */}
-            <Grid item xs={12} sm={4} md={4}>
-              <Card
-                sx={{
-                  height: 300,
-                  p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderRadius: 4,
-                  boxShadow: 6,
-                  backgroundColor: '#ffffff',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    boxShadow: 12,
-                  },
-                }}
-              >
-                <AssignmentTurnedIn fontSize="large" />
-                <Typography variant="h6" fontWeight="bold" mt={2}>
-                  Full-Time Work
-                </Typography>
-                <Typography variant="body2" textAlign="center" mt={1}>
-                  Find stable jobs and start your professional career.
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2 }}
-                  onClick={() => navigate('/fulltime')}
-                >
-                  Browse Full-Time
-                </Button>
-              </Card>
-            </Grid>
           </Grid>
+        </Container>
+      </Box>
+
+      {/* Navigation Section - Gigs / Full-Time / Volunteering */}
+      <Box mt={8} mb={2}>
+        <Container maxWidth="xl">
+          <Grid container spacing={0} justifyContent="space-around" alignItems="center">
+            
+            <Grid item xs={12} sm={4} textAlign="center">
+              <Button
+                startIcon={<WorkOutline />}
+                variant="text"
+                onClick={() => navigate('/gigs')}
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+              >
+                Gigs
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} sm={4} textAlign="center">
+              <Button
+                startIcon={<AssignmentTurnedIn />}
+                variant="text"
+                onClick={() => navigate('/fulltime')}
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+              >
+                Full-time work
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} sm={4} textAlign="center">
+              <Button
+                startIcon={<FavoriteBorder />}
+                variant="text"
+                onClick={() => navigate('/volunteering')}
+                sx={{ fontSize: '1.1rem', color: 'black', textTransform: 'none' }}
+              >
+                Volunteering
+              </Button>
+            </Grid>
+
+          </Grid>
+
+          <Divider sx={{ mt: 2, borderColor: 'lightGrey.main' }} />
         </Container>
       </Box>
     </>
