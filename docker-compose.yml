@@ -43,8 +43,20 @@ services:
     container_name: bridgework-frontend
     restart: always
     ports:
-      - "3000:80"
+      - "3000"
     depends_on:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    container_name: bridgework-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
       - backend
 
 volumes:
