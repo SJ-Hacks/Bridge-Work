@@ -39,12 +39,14 @@ class JobBase(BaseModel):
     title: str
     description: str
     location: str
-    points: int
+    pay: int
     is_active: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    pay: int
-    organization: str
-    skills: List[str]
+    employer: str
+    tags: List[str]
+    type: str  # job, gig, volunteer
+    # skills: List[str]
+    job_poster: PyObjectId  # User
 
 
 class User(BaseModel):
