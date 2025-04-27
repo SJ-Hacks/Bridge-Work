@@ -38,15 +38,9 @@ const Volunteering = () => {
 
   return (
     <Container sx={{ mt: 8 }}>
-      <Typography
-        variant="h4"
-        color="primary"
-        gutterBottom
-        fontWeight="bold"
-        textAlign="center"
-      >
-        Volunteer Opportunities
-      </Typography>
+    <Typography color="primary" gutterBottom textAlign="left" sx={{pb:{md:5}, pl:{md:14}, pr:{md:14}}}>
+      Volunteering lets you contribute to your community and earn reward points, which you can later redeem for exciting benefits.
+    </Typography>
 
       <Grid container spacing={4} justifyContent="center">
         {volunteers.map((volunteer) => (

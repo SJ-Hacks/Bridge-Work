@@ -1,6 +1,5 @@
 annotated-types==0.7.0
 anyio==4.9.0
-bson==0.5.10
 certifi==2025.4.26
 cffi==1.17.1
 charset-normalizer==3.4.1
@@ -51,3 +50,5 @@ uvicorn==0.34.2
 uvloop==0.21.0
 watchfiles==1.0.5
 websockets==15.0.1
+Faker==37.1.0
+motor==3.7.0
