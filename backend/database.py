@@ -8,7 +8,7 @@ class Database:
     db = None
 
     async def connect_to_database(self):
-        self.client = AsyncIOMotorClient("mongodb://admin:pass@localhost:27017/admin")
+        self.client = AsyncIOMotorClient("mongodb://admin:password123@localhost:27017/admin")
         self.db = self.client.bridgeworks
 
     async def close_database_connection(self):

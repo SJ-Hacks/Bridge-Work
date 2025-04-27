@@ -24,7 +24,7 @@ class BaseCRUDAPI(Generic[T]):
 
 
     async def get_one(self, item_id: str, **kwargs):
-        document = await self.db.db[self.collection_name].find_one({"_id": ObjectId(item_id), **kwargs})
+        document = await self.db.db[self.collection_name].find_one({"_id": item_id, **kwargs})
         if not document:
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
         return self.model(**document)
