@@ -34,6 +34,7 @@ function App() {
         <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
         <Route path="/edit-job/:id" element={<EditJob />} />
         <Route path="/applications/:jobId" element={<Applications />} />
+        <Route path="/signin" element={<SignInSignUp />} />
 
 
       </Routes>

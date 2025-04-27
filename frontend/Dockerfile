@@ -11,8 +11,10 @@ RUN npm install
 # Set node memory limit
 ENV NODE_OPTIONS=--max-old-space-size=2048
 
-# Copy the entire frontend project and build it
+# Now copy only the source files (not node_modules, build etc.)
 COPY . .
+
+# Build the frontend
 RUN npm run build
 
 # Stage 2: Serve using nginx

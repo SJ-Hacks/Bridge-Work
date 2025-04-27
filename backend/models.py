@@ -53,11 +53,11 @@ class User(BaseModel):
     about_me: str
     location: str
     rating: int
-    phone: int
+    phone: int = None
     email: str
-    photo_b64: str
+    photo_b64: str = None
     type: str  # job_seeker, job_poster
-    organization: str
+    organization: str = None
 
     class Config:
         validate_by_name = True
@@ -82,7 +82,7 @@ class VolunteerJob(JobBase):
         validate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
-    
+
 
 class GigJob(JobBase):
     # created_at: datetime = Field(default_factory=datetime.utcnow)

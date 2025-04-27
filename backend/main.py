@@ -36,6 +36,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from api.auth.oauth import router as oauth_router
+
 # Include routers
 job_api = JobAPI()
 gig_api = GigJobAPI()
@@ -43,6 +45,7 @@ volunteer_api = VolunteerJobAPI()
 application_api = ApplicationAPI()
 user_api = UserAPI()
 
+app.include_router(oauth_router )
 app.include_router(job_api.router, prefix="/api/job", tags=["Jobs"])
 app.include_router(gig_api.router, prefix="/api/gig", tags=["Gigs"])
 app.include_router(volunteer_api.router, prefix="/api/volunteer", tags=["Volunteers"])

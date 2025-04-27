@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import RedirectResponse
-import requests
-import urllib.parse
+import jwt
+from fastapi import APIRouter, Request, Body, HTTPException
 
+router = APIRouter()
 from api.auth.auth import create_access_token
 from api.user_service import get_or_create_user
 from main import app
@@ -19,66 +18,50 @@ GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 
 
 # === Route: start Google Login ===
-@app.get("/auth/google/login")
-def google_login():
-    params = {
-        "client_id": GOOGLE_CLIENT_ID,
-        "response_type": "code",
-        "scope": "openid email profile",
-        "redirect_uri": GOOGLE_REDIRECT_URI,
-        "prompt": "consent",  # force to show account selection
-        "access_type": "offline"
+# @app.get("/auth/google/login")
+# def google_login():
+#     params = {
+#         "client_id": GOOGLE_CLIENT_ID,
+#         "response_type": "code",
+#         "scope": "openid email profile",
+#         "redirect_uri": GOOGLE_REDIRECT_URI,
+#         "prompt": "consent",  # force to show account selection
+#         "access_type": "offline"
+#     }
+#     url = f"{GOOGLE_AUTH_URL}?{urllib.parse.urlencode(params)}"
+#     return RedirectResponse(url)
+
+
+@router.post("/auth/google/login")
+async def google_callback(body: dict = Body(...)) -> dict:
+    credential = body.get("credential")
+
+    if not credential:
+        raise HTTPException(status_code=400, detail="Missing 'credential' in request body.")
+
+    try:
+        decoded = jwt.decode(credential, options={"verify_signature": False})
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid credential: {str(e)}")
+
+    userinfo = {
+        "email": decoded.get("email"),
+        "name": decoded.get("name"),
+        "picture": decoded.get("picture"),
+        "type": "job_seeker"
     }
-    url = f"{GOOGLE_AUTH_URL}?{urllib.parse.urlencode(params)}"
-    return RedirectResponse(url)
 
-
-@app.get("/auth/google/callback")
-def google_callback(request: Request):
-    code = request.query_params.get("code")
-
-    if not code:
-        raise HTTPException(status_code=400, detail="No code provided by Google")
-
-    # Exchange code for tokens
-    token_data = {
-        "code": code,
-        "client_id": GOOGLE_CLIENT_ID,
-        "client_secret": GOOGLE_CLIENT_SECRET,
-        "redirect_uri": GOOGLE_REDIRECT_URI,
-        "grant_type": "authorization_code"
-    }
-
-    token_response = requests.post(GOOGLE_TOKEN_URL, data=token_data)
-    if token_response.status_code != 200:
-        raise HTTPException(status_code=400, detail="Failed to get access token")
-
-    token_json = token_response.json()
-    access_token = token_json.get("access_token")
-
-    # Fetch user info
-    userinfo_response = requests.get(
-        GOOGLE_USERINFO_URL,
-        headers={"Authorization": f"Bearer {access_token}"}
-    )
-
-    if userinfo_response.status_code != 200:
-        raise HTTPException(status_code=400, detail="Failed to fetch user info")
-
-    userinfo = userinfo_response.json()
-
-    # Here: Create or Fetch User
-    user = get_or_create_user(userinfo)
-
-    # Create a token for this user
+    user = await get_or_create_user(userinfo)
     access_token = create_access_token(data={"sub": user["email"]})
+
+    print("User info:", user)
 
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "user": {
-            "email": user["email"],
-            "name": user["name"],
-            "picture": user.get("picture")
-        }
+
+        "email": user["email"],
+        "name": user["name"],
+        "type": user.get("type")
+
     }
