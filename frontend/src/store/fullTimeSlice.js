@@ -1,41 +1,63 @@
-// src/store/jobSlice.js
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../api/api'; 
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "../api/api";
 
-export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async () => {
-  const response = await API.get('/job');
-  return response.data;
-});
+// Fetch all full-time jobs
+export const fetchFullTimeJobs = createAsyncThunk(
+  "fulltime/fetchFullTimeJobs",
+  async () => {
+    const response = await API.get("/api/job");
+    return response.data;
+  }
+);
 
-export const postJob = createAsyncThunk('jobs/postJob', async (jobData) => {
-  const response = await API.post('/job', jobData);
-  return response.data;
-});
+// Apply for a full-time job
+export const applyForFullTime = createAsyncThunk(
+  "fulltime/applyForFullTime",
+  async ({ jobId }) => {
+    const mockUserId = "680d9b50de670faf3e8cf6a7"; // Temporary placeholder until auth is implemented
 
-const jobSlice = createSlice({
-  name: 'jobs',
+    const response = await API.post("/api/application", {
+      job_id: jobId,
+      applicant: mockUserId,
+      poster: mockUserId,
+    });
+
+    return response.data;
+  }
+);
+
+const fullTimeSlice = createSlice({
+  name: "fulltime",
   initialState: {
-    jobs: [],
-    loading: false,
+    fullTimeJobs: [],
+    status: "idle",
     error: null,
+    applyStatus: "idle",
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchJobs.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchFullTimeJobs.pending, (state) => {
+        state.status = "loading";
       })
-      .addCase(fetchJobs.fulfilled, (state, action) => {
-        state.loading = false;
-        state.jobs = action.payload;
+      .addCase(fetchFullTimeJobs.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.fullTimeJobs = action.payload;
       })
-      .addCase(fetchJobs.rejected, (state, action) => {
-        state.loading = false;
+      .addCase(fetchFullTimeJobs.rejected, (state, action) => {
+        state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(postJob.fulfilled, (state, action) => {
-        state.jobs.push(action.payload);
+      .addCase(applyForFullTime.pending, (state) => {
+        state.applyStatus = "loading";
+      })
+      .addCase(applyForFullTime.fulfilled, (state) => {
+        state.applyStatus = "succeeded";
+      })
+      .addCase(applyForFullTime.rejected, (state) => {
+        state.applyStatus = "failed";
       });
   },
 });
 
-export default jobSlice.reducer;
+export default fullTimeSlice.reducer;

@@ -1,50 +1,26 @@
-import { useState } from 'react';
-import { 
-  Card, CardContent, CardActions, Button, Typography, Grid, Container, Stack,
-  Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert
-} from '@mui/material';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import DescriptionIcon from '@mui/icons-material/Description';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFullTimeJobs, applyForFullTime } from "../store/fullTimeSlice";
+import {
+  Container, Typography, Grid, Card, CardContent, Button, Snackbar, Alert, CircularProgress, Stack
+} from "@mui/material";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import DescriptionIcon from "@mui/icons-material/Description";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EventRepeatIcon from "@mui/icons-material/EventRepeat";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-// Static full-time job data
-const fullTimeJobs = [
-  {
-    id: 1,
-    title: 'Office Assistant',
-    employer: 'City of San Jose',
-    pay: '$18 / hr',
-    description: 'Provide administrative support to various city departments. Manage filing, calls, and scheduling tasks.',
-    time: 'Mon-Fri, 9:00 AM - 5:00 PM',
-    type: 'Full-Time',
-    location: 'City Hall, San Jose',
-  },
-  {
-    id: 2,
-    title: 'Maintenance Worker',
-    employer: 'San Jose Parks Department',
-    pay: '$20 / hr',
-    description: 'Perform maintenance of parks, trails, and recreational facilities. Requires basic repair skills and teamwork.',
-    time: 'Mon-Fri, 7:00 AM - 3:00 PM',
-    type: 'Full-Time',
-    location: 'Various San Jose locations',
-  },
-];
-
-// Helper function to split description into ~60 character lines
-const splitIntoLines = (text, maxLineLength = 60) => {
-  const words = text.split(' ');
+const splitIntoLines = (text, maxLineLength = 50) => {
+  const words = text.split(" ");
   const lines = [];
-  let currentLine = '';
+  let currentLine = "";
 
   words.forEach(word => {
     if ((currentLine + word).length <= maxLineLength) {
-      currentLine += word + ' ';
+      currentLine += word + " ";
     } else {
       lines.push(currentLine.trim());
-      currentLine = word + ' ';
+      currentLine = word + " ";
     }
   });
 
@@ -56,49 +32,56 @@ const splitIntoLines = (text, maxLineLength = 60) => {
 };
 
 const FullTime = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { fullTimeJobs, status, applyStatus } = useSelector((state) => state.fulltime);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const handleOpen = (job) => {
-    setSelectedJob(job);
-    setOpen(true);
+  useEffect(() => {
+    dispatch(fetchFullTimeJobs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (applyStatus === "succeeded") {
+      setOpenSnackbar(true);
+    }
+  }, [applyStatus]);
+
+  const handleApply = (jobId) => {
+    dispatch(applyForFullTime({ jobId }));
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedJob(null);
-  };
-
-  const handleConfirm = () => {
-    setSnackbarOpen(true);
-    handleClose();
-  };
+  if (status === "loading") {
+    return (
+      <Container sx={{ mt: 8, textAlign: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ mt: 8 }}>
       <Typography variant="h4" color="primary" gutterBottom fontWeight="bold" textAlign="center">
-        Full-Time Job Opportunities
+        Full-Time Jobs
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
         {fullTimeJobs.map((job) => (
-          <Grid item xs={12} sm={6} md={6} key={job.id}>
+          <Grid item xs={12} sm={6} md={6} key={job._id}>
             <Card
               variant="outlined"
               sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
                 borderRadius: 3,
-                borderColor: 'grey.300',
+                borderColor: "grey.300",
                 p: 2,
-                transition: 'all 0.3s ease',
-                '&:hover': {
+                transition: "all 0.3s ease",
+                "&:hover": {
                   boxShadow: 6,
-                  transform: 'translateY(-4px)',
-                  borderColor: 'primary.main',
+                  transform: "translateY(-4px)",
+                  borderColor: "primary.main",
                 },
               }}
             >
@@ -107,19 +90,19 @@ const FullTime = () => {
                   {job.title}
                 </Typography>
                 <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                  {job.employer}
+                  {job.organization}
                 </Typography>
 
                 <Stack direction="row" alignItems="center" spacing={1} mb={1}>
                   <MonetizationOnIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: '1rem' }}>{job.pay}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: "1rem" }}>{job.pay ? `$${job.pay}` : "N/A"}</Typography>
                 </Stack>
 
                 <Stack direction="row" alignItems="flex-start" spacing={1} mb={1}>
-                  <DescriptionIcon fontSize="small" sx={{ mt: '2px' }} />
+                  <DescriptionIcon fontSize="small" sx={{ mt: "2px" }} />
                   <Stack>
                     {splitIntoLines(job.description).map((line, index) => (
-                      <Typography key={index} variant="body2" sx={{ fontSize: '1rem' }}>
+                      <Typography key={index} variant="body2" sx={{ fontSize: "1rem" }}>
                         {line}
                       </Typography>
                     ))}
@@ -127,67 +110,33 @@ const FullTime = () => {
                 </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                  <AccessTimeIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: '1rem' }}>{job.time}</Typography>
-                </Stack>
-
-                <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                  <EventRepeatIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: '1rem' }}>{job.type}</Typography>
-                </Stack>
-
-                <Stack direction="row" alignItems="center" spacing={1}>
                   <LocationOnIcon fontSize="small" />
-                  <Typography variant="body2" sx={{ fontSize: '1rem' }}>{job.location}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: "1rem" }}>{job.location}</Typography>
                 </Stack>
               </CardContent>
 
-              <CardActions sx={{ mt: 2 }}>
-                <Button variant="contained" color="primary" fullWidth onClick={() => handleOpen(job)}>
-                  Apply Now
-                </Button>
-              </CardActions>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+                onClick={() => handleApply(job._id)}
+                disabled={applyStatus === "loading"}
+              >
+                {applyStatus === "loading" ? <CircularProgress size={20} /> : "Apply Now"}
+              </Button>
             </Card>
           </Grid>
         ))}
       </Grid>
 
-      {/* Apply Modal */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Apply for Full-Time Job</DialogTitle>
-        <DialogContent>
-          {selectedJob && (
-            <>
-              <Typography variant="h6" fontWeight="bold" mb={1}>
-                {selectedJob.title}
-              </Typography>
-              <Typography variant="subtitle1" color="text.secondary" mb={2}>
-                {selectedJob.employer}
-              </Typography>
-              <Typography variant="body2" mb={2}>
-                Are you sure you want to apply for this job opportunity?
-              </Typography>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirm} color="primary" variant="contained">
-            Confirm Apply
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar */}
       <Snackbar
-        open={snackbarOpen}
+        open={openSnackbar}
         autoHideDuration={3000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert severity="success" onClose={() => setSnackbarOpen(false)} sx={{ width: '100%' }}>
+        <Alert severity="success" onClose={() => setOpenSnackbar(false)} sx={{ width: "100%" }}>
           Application submitted successfully!
         </Alert>
       </Snackbar>
