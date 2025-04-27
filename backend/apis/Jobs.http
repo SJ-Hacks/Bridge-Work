@@ -123,7 +123,7 @@ Content-Type: application/json
 
 
 ### get all  applications
-GET http://localhost:8000/api/application?selected=true
+GET http://localhost:8000/api/application
 Content-Type: application/json
 
 
