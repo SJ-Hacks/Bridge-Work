@@ -24,11 +24,18 @@ const SignInSignUp = () => {
       localStorage.setItem('userId', response.data.id);
 
       const fullName = response.data.name || '';
+      localStorage.setItem('userFullName', fullName);
       const firstName = fullName.split(' ')[0] || 'User';
       localStorage.setItem('userFirstName', firstName);
       setGoogleUser(decoded);
 
-      navigate('/'); // ⬅️ directly navigate to Home
+      if (response.data.type == 'job_poster')
+        {
+            window.location.href = '/post-job'
+        }
+        else {
+            window.location.href = '/'
+        }
     } catch (error) {
       console.error('Error calling backend:', error.response?.data || error.message);
     }
