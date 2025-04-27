@@ -59,7 +59,7 @@ async def google_callback(body: dict = Body(...)) -> dict:
     return {
         "access_token": access_token,
         "token_type": "bearer",
-
+        "id": str(user["_id"]),
         "email": user["email"],
         "name": user["name"],
         "type": user.get("type")

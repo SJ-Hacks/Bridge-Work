@@ -22,6 +22,7 @@ const SignInSignUp = () => {
 
             localStorage.setItem('jwtToken', response.data.access_token);
             localStorage.setItem('userRole', response.data.type);
+            localStorage.setItem('userId', response.data.id);
             setGoogleUser(decoded);
             window.location.href = '/';
         } catch (error) {
