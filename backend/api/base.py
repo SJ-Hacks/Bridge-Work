@@ -1,13 +1,15 @@
 from fastapi import APIRouter, HTTPException
-from typing import Type, TypeVar, Generic, List
+from typing import Type, TypeVar, Generic, List, Optional
 from pydantic import BaseModel
 from backend.database import Database
 from bson import ObjectId
-from fastapi import Body
+from fastapi import Body, Depends, Path
 
 from database import db
+from models import JobBase, PyObjectId
 
-T = TypeVar("T", bound=BaseModel)
+T = TypeVar("T", bound=JobBase)
+
 
 class BaseCRUDAPI(Generic[T]):
     def __init__(self, model: Type[T], collection_name: str):
@@ -22,8 +24,7 @@ class BaseCRUDAPI(Generic[T]):
         self.router.put("/{item_id}", response_model=self.model)(self.update)
         self.router.delete("/{item_id}")(self.delete)
 
-
-    async def get_one(self, item_id: str, **kwargs):
+    async def get_one(self, item_id: PyObjectId, kwargs: Optional[dict] = {}):
         document = await self.db.db[self.collection_name].find_one({"_id": item_id, **kwargs})
         if not document:
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
@@ -36,12 +37,12 @@ class BaseCRUDAPI(Generic[T]):
             items.append(self.model(**document))
         return items
 
-    async def create(self, item: T=Body()):
-        document = item.dict(by_alias=True)
+    async def create(self, item: T = Body(...)):
+        document = item.model_dump(by_alias=True)
         result = await self.db.db[self.collection_name].insert_one(document)
-        return await self.get_one(str(result.inserted_id))
+        return await self.get_one(result.inserted_id)
 
-    async def update(self, item_id: str, item: T):
+    async def update(self, item_id: PyObjectId, item: T):
         document = item.dict(by_alias=True)
         result = await self.db.db[self.collection_name].update_one(
             {"_id": ObjectId(item_id)}, {"$set": document}
@@ -50,8 +51,8 @@ class BaseCRUDAPI(Generic[T]):
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
         return await self.get_one(item_id)
 
-    async def delete(self, item_id: str):
-        result = await self.db.db[self.collection_name].delete_one({"_id": ObjectId(item_id)})
+    async def delete(self, item_id: PyObjectId):
+        result = await self.db.db[self.collection_name].delete_one({"_id": item_id})
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail=f"{self.model.__name__} not found")
         return {"message": f"{self.model.__name__} deleted successfully"}

@@ -6,6 +6,8 @@ from backend.database import Database
 from backend.api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI
 
 from database import db
+from models import Job
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

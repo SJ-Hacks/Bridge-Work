@@ -1,4 +1,4 @@
-from backend.api.base import BaseCRUDAPI
+from backend.api.base import BaseCRUDAPI, T
 from fastapi import Body
 from backend.models import GigJob, VolunteerJob, Job
 
@@ -6,11 +6,6 @@ from backend.models import GigJob, VolunteerJob, Job
 class JobAPI(BaseCRUDAPI[Job]):
     def __init__(self):
         super().__init__(Job, "job")
-
-    async def create(self, item: Job = Body()):
-        document = item.dict(by_alias=True)
-        result = await self.db.db[self.collection_name].insert_one(document)
-        return await self.get_one(str(result.inserted_id))
 
 
 class GigJobAPI(BaseCRUDAPI[GigJob]):
@@ -21,3 +16,5 @@ class GigJobAPI(BaseCRUDAPI[GigJob]):
 class VolunteerJobAPI(BaseCRUDAPI[VolunteerJob]):
     def __init__(self):
         super().__init__(VolunteerJob, "volunteers")
+
+# x
