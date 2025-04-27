@@ -91,6 +91,7 @@ Content-Type: application/json
   "location": "Local",
   "points": 20,
   "is_active": true,
+  "pay": 120000,
   "organization": "Local Community Center",
   "skills": ["Event Management", "Communication"]
 }

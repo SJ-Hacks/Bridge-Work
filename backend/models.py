@@ -14,7 +14,6 @@ class JobBase(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     pay: int
     organization: str
-    applied: bool = False
     skills: List[str]
 
 
