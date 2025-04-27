@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Typography, Card, CardContent, CardActions, Button, Grid, Stack, Snackbar, Alert, Chip, Box } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardActions, Button, Grid, Stack, Chip, Snackbar, Alert, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const mockPostedJobs = [
@@ -20,10 +20,32 @@ const mockPostedJobs = [
 const MyPostedJobs = () => {
   const [postedJobs, setPostedJobs] = useState(mockPostedJobs);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
     setPostedJobs((prev) => prev.filter((job) => job.id !== id));
+    setSnackbarMessage('Job deleted successfully!');
+    setSnackbarOpen(true);
+  };
+
+  const handleCloseJob = (id) => {
+    setPostedJobs((prev) =>
+      prev.map((job) =>
+        job.id === id ? { ...job, status: 'Closed' } : job
+      )
+    );
+    setSnackbarMessage('Job closed successfully!');
+    setSnackbarOpen(true);
+  };
+
+  const handleReopenJob = (id) => {
+    setPostedJobs((prev) =>
+      prev.map((job) =>
+        job.id === id ? { ...job, status: 'Open' } : job
+      )
+    );
+    setSnackbarMessage('Job reopened successfully!');
     setSnackbarOpen(true);
   };
 
@@ -64,26 +86,48 @@ const MyPostedJobs = () => {
                     </Stack>
                   </CardContent>
 
-                  <CardActions sx={{ mt: 2 }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    fullWidth
-                    onClick={() => navigate(`/edit-job/${job.id}`)}
+                  <CardActions sx={{ mt: 2, flexDirection: 'column', gap: 1.5 }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      onClick={() => navigate(`/edit-job/${job.id}`)}
                     >
-                    Edit
+                      Edit
                     </Button>
 
                     <Button
-                      variant="outlined"
-                      color="error"
+                      variant="contained"
+                      color="secondary"
                       size="small"
                       fullWidth
-                      onClick={() => handleDelete(job.id)}
+                      onClick={() => navigate(`/applications/${job.id}`)}
                     >
-                      Delete
+                      View Applicants
                     </Button>
+
+                    {job.status === 'Open' ? (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        fullWidth
+                        onClick={() => handleCloseJob(job.id)}
+                      >
+                        Close Job
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        fullWidth
+                        onClick={() => handleReopenJob(job.id)}
+                      >
+                        Reopen Job
+                      </Button>
+                    )}
                   </CardActions>
                 </Card>
               </Grid>
@@ -91,7 +135,7 @@ const MyPostedJobs = () => {
           </Grid>
         )}
 
-        {/* Success Snackbar */}
+        {/* Snackbar */}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={3000}
@@ -99,7 +143,7 @@ const MyPostedJobs = () => {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
           <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
-            Gig deleted successfully!
+            {snackbarMessage}
           </Alert>
         </Snackbar>
       </Container>

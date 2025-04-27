@@ -10,6 +10,8 @@ import Leaderboard from './pages/Leaderboard';
 import PostJob from './pages/PostJob';
 import MyPostedJobs from './pages/MyPostedJobs';
 import EditJob from './pages/EditJob';
+import Applications from './pages/Applications';
+
 
 
 
@@ -28,6 +30,8 @@ function App() {
         <Route path="/post-job" element={<PostJob />} />
         <Route path="/my-posted-jobs" element={<MyPostedJobs />} />
         <Route path="/edit-job/:id" element={<EditJob />} />
+        <Route path="/applications/:jobId" element={<Applications />} />
+
 
       </Routes>
     </>
