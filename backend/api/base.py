@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import Type, TypeVar, Generic, List, Optional
 from pydantic import BaseModel
-from backend.database import Database
 from bson import ObjectId
 from fastapi import Body, Depends, Path
 

@@ -1,6 +1,6 @@
-from backend.api.base import BaseCRUDAPI, T
+from api.base import BaseCRUDAPI, T
 from fastapi import Body
-from backend.models import GigJob, VolunteerJob, Job, PyObjectId
+from models import GigJob, VolunteerJob, Job, PyObjectId
 from models import Application
 
 

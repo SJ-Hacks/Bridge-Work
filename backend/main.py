@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from backend.database import Database
-from backend.api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI, ApplicationCrud
+from api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI, ApplicationCrud
 
 from database import db
 from models import Job

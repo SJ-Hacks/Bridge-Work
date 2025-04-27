@@ -1,6 +1,6 @@
-from backend.models import UserBase
+from models import UserBase
 from datetime import datetime
-from backend.database import db  # Ensure your database connection is imported
+from database import db  # Ensure your database connection is imported
 
 def get_or_create_user(userinfo: dict) -> dict:
     # Validate input data using UserBase
