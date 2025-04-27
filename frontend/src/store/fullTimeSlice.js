@@ -13,13 +13,13 @@ export const fetchFullTimeJobs = createAsyncThunk(
 // Apply for a full-time job
 export const applyForFullTime = createAsyncThunk(
   "fulltime/applyForFullTime",
-  async ({ jobId }) => {
+  async ({ jobId, job_poster_id }) => {
     const mockUserId = "680d9b50de670faf3e8cf6a7"; // Temporary placeholder until auth is implemented
 
     const response = await API.post("/api/application", {
       job_id: jobId,
-      applicant: mockUserId,
-      poster: mockUserId,
+      applicant: localStorage.getItem("userId") ,
+      poster: job_poster_id,
     });
 
     return response.data;

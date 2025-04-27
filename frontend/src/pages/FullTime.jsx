@@ -46,8 +46,8 @@ const FullTime = () => {
     }
   }, [applyStatus]);
 
-  const handleApply = (jobId) => {
-    dispatch(applyForFullTime({ jobId }));
+  const handleApply = (jobId, job_poster_id) => {
+    dispatch(applyForFullTime({ jobId,job_poster_id }));
   };
 
   if (status === "loading") {
@@ -120,7 +120,7 @@ const FullTime = () => {
                 color="primary"
                 fullWidth
                 sx={{ mt: 2 }}
-                onClick={() => handleApply(job._id)}
+                onClick={() => handleApply(job._id, job.job_poster)}
                 disabled={applyStatus === "loading"}
               >
                 {applyStatus === "loading" ? <CircularProgress size={20} /> : "Apply Now"}
