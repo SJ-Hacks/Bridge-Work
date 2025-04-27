@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from backend.database import Database
 from backend.api.jobs import GigJobAPI, VolunteerJobAPI, JobAPI
 
-db = Database()
+from database import db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,7 +21,8 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",  # Swagger UI endpoint
     redoc_url="/redoc",  # ReDoc endpoint
-    openapi_url="/openapi.json"  # OpenAPI schema endpoint
+    openapi_url="/openapi.json", # OpenAPI schema endpoint
+    lifespan=lifespan,  # Use async context manager for startup/shutdown
 )
 
 

@@ -9,7 +9,7 @@ class JobAPI(BaseCRUDAPI[Job]):
 
     async def create(self, item: Job = Body()):
         document = item.dict(by_alias=True)
-        result = await self.db[self.collection_name].insert_one(document)
+        result = await self.db.db[self.collection_name].insert_one(document)
         return await self.get_one(str(result.inserted_id))
 
 

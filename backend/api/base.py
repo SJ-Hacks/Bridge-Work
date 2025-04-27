@@ -5,6 +5,8 @@ from backend.database import Database
 from bson import ObjectId
 from fastapi import Body
 
+from database import db
+
 T = TypeVar("T", bound=BaseModel)
 
 class BaseCRUDAPI(Generic[T]):
@@ -12,7 +14,7 @@ class BaseCRUDAPI(Generic[T]):
         self.model = model
         self.collection_name = collection_name
         self.router = APIRouter()
-        self.db = Database()
+        self.db = db
 
         self.router.get("/", response_model=List[self.model])(self.get_all)
         self.router.get("/{item_id}", response_model=self.model)(self.get_one)
