@@ -2,10 +2,7 @@
 
 BridgeWorks is a platform that empowers homeless individuals by connecting them with short-term gigs and community service opportunities. It builds a reputation score over time, fostering pathways to employment, housing, and dignity, while strengthening community bonds in San José.
 
----
 
-# Live Link
-http://ec2-54-89-21-90.compute-1.amazonaws.com/
 ---
 
 ## ✨ Tech Stack
