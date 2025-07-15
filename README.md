@@ -74,12 +74,6 @@ npm start
 
 ---
 
-## 🌐 Live URL
-
-> [http://ec2-54-89-21-90.compute-1.amazonaws.com/](http://ec2-54-89-21-90.compute-1.amazonaws.com/)
-
----
-
 ## 📈 Core Features
 
 - Simple Profile Creation
